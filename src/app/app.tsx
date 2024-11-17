@@ -9,6 +9,8 @@ import {
 import { Dev } from "pages/dev";
 import { ErrorComponent } from "pages/error";
 import { Mint } from "pages/mint";
+import { RqProvider } from "shared/providers/rq";
+import { WagmiProvider } from "shared/providers/wagmi";
 
 import "./index.css";
 
@@ -25,5 +27,11 @@ const router = createBrowserRouter(
 );
 
 export const App = () => {
-  return <RouterProvider router={router} />;
+  return (
+    <WagmiProvider>
+      <RqProvider>
+        <RouterProvider future={{ v7_startTransition: true }} router={router} />
+      </RqProvider>
+    </WagmiProvider>
+  );
 };

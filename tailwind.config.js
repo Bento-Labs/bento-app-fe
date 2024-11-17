@@ -10,6 +10,7 @@ export default {
       transparent: "transparent",
       black: "#000000",
       woodSmoke: "#0C0E0F",
+      darkGrey: "#383838",
       regentGrey: "#8F99A8",
       bluishGrey: "#7E8D9C",
       ironsideGrey: "#666666",
@@ -23,8 +24,7 @@ export default {
     },
     extend: {
       backgroundImage: {
-        parisGreenGradient:
-          "background: linear-gradient(90deg, #4CD48B 0%, #778CFC 100%);",
+        parisGreenGradient: "linear-gradient(90deg, #4CD48B 0%, #778CFC 100%);",
       },
       padding: {
         4.5: "18px",

@@ -8,6 +8,9 @@ import tsconfigPaths from "vite-tsconfig-paths";
 export default defineConfig(({ mode }) => {
   const isDev = mode === "development";
   return {
+    build: {
+      sourcemap: isDev,
+    },
     plugins: [
       react(),
       svgr(),

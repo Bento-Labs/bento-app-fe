@@ -19,7 +19,7 @@ export const Button = <E extends ElementType = "button">(
   props: PropsWithChildren<PolymorphicProps<E, Props>>
 ) => {
   const {
-    as: Comp = "button",
+    as = "button",
     children,
     className,
     disabled = false,
@@ -27,6 +27,7 @@ export const Button = <E extends ElementType = "button">(
     theme = "parisGreenGradient",
     ...restProps
   } = props;
+  const Comp = as;
 
   const content = isLoading ? (
     <span className="opacity-0">{children}</span>
@@ -35,12 +36,18 @@ export const Button = <E extends ElementType = "button">(
   );
 
   return (
+    // FIXME: https://github.com/emotion-js/emotion/issues/3245
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     <Comp
       {...restProps}
+      disabled={disabled}
       className={twMerge(
-        "relative inline-flex cursor-pointer select-none items-center justify-center rounded-lg px-4.5 py-2 text-center font-medium transition",
+        "relative inline-flex cursor-pointer select-none items-center justify-center rounded-lg px-3 py-2 text-center text-sm font-medium transition-colors",
         (isLoading || disabled) && "pointer-events-none",
-        theme === "parisGreenGradient" ? "" : "",
+
+        theme === "parisGreenGradient" &&
+          "bg-parisGreenGradient hover:brightness-105 active:brightness-105 disabled:bg-darkGrey disabled:bg-none",
 
         className
       )}

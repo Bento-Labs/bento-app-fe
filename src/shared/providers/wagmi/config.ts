@@ -1,32 +1,44 @@
-import { Chain, createClient, http } from "viem";
-import { createConfig, createStorage } from "wagmi";
-import { sepolia } from "wagmi/chains";
+import { AppKitNetwork, sepolia, mainnet } from "@reown/appkit/networks";
+import { createAppKit } from "@reown/appkit/react";
+import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 
-const supportedChains: [Chain, ...Chain[]] = [sepolia];
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [mainnet, sepolia];
 
-export const config = createConfig({
-  storage: createStorage({
-    key: `galactica-wagmi.${supportedChains[0].id}`,
-    storage: localStorage,
-  }),
-  chains: supportedChains,
-  client: ({ chain }) => {
-    return createClient({
-      batch: {
-        multicall: {
-          batchSize: 1024 * 3, // 3kb
-        },
-      },
-      chain,
-      transport: http(chain.rpcUrls.default.http[0]),
-    });
+const projectId = "47daa50416effcf4b1f3d7bc76013da9";
+
+const metadata = {
+  name: "BentoApp",
+  description: "Bento App",
+  url: "https://bento-app-fe.pages.dev",
+  icons: ["https://avatars.githubusercontent.com/u/179229932"],
+};
+
+const wagmiAdapter = new WagmiAdapter({
+  networks,
+  projectId,
+  ssr: false,
+});
+
+createAppKit({
+  adapters: [wagmiAdapter],
+  networks,
+  projectId,
+  defaultNetwork: sepolia,
+  debug: true,
+  allowUnsupportedChain: true,
+  metadata,
+  features: {
+    socials: false,
+    email: false,
+    analytics: false, // Optional - defaults to your Cloud configuration
   },
 });
 
-export type Config = typeof config;
+export type Config = typeof wagmiAdapter.wagmiConfig;
+export const config = wagmiAdapter.wagmiConfig;
 
 declare module "wagmi" {
   interface Register {
-    config: typeof config;
+    config: Config;
   }
 }

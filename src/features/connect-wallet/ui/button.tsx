@@ -24,8 +24,8 @@ type Props = {
 export function ConnectButton({
   className,
   installMetamaskContent = "Install MetaMask",
-  connectContent = "Connect MetaMask",
-  switchChainContent = "Switch to Galactica",
+  connectContent = "Connect Wallet",
+  switchChainContent = "Switch Chain",
   ...props
 }: Props) {
   const { address, isDisconnected, isConnecting, connector, chain } =
