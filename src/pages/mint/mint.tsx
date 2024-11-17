@@ -1,3 +1,9 @@
+import { Header } from "pages/ui/layout";
+
 export const Mint = () => {
-  return <div>Mint</div>;
+  return (
+    <div>
+      <Header />
+    </div>
+  );
 };
