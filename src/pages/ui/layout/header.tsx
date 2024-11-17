@@ -1,11 +1,11 @@
-import { ConnectWalletButton } from "features/connect-wallet";
+import { AppKitConnectWalletButton } from "features/connect-wallet";
 
 export const Header = () => {
   return (
-    <nav className="flex">
-      <img src="/log.png" alt="log" />
+    <nav className="mx-10 mt-6 flex items-center">
+      <img className="w-[113px]" src="/logo.png" alt="log" />
 
-      <ConnectWalletButton />
+      <AppKitConnectWalletButton className="ml-auto" />
     </nav>
   );
 };

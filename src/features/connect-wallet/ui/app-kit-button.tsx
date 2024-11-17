@@ -33,7 +33,7 @@ export function ConnectButton({
   };
 
   const btnProps: ComponentProps<typeof Button> = {
-    className: twMerge("w-[18.75rem] gap-x-1.5 whitespace-nowrap", className),
+    className: twMerge("gap-x-1.5 whitespace-nowrap", className),
     isLoading: loading,
     ...props,
   };
