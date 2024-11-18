@@ -22,6 +22,7 @@ export default defineConfig(({ mode }) => {
             lintCommand: 'eslint "./src/**/*.{ts,tsx}"',
           },
           overlay: {
+            position: "bl",
             initialIsOpen: false,
           },
           typescript: true,

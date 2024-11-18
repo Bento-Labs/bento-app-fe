@@ -16,6 +16,7 @@ export default {
       ironsideGrey: "#666666",
       mirage: "#171A1C",
       balticSea: "#292D30",
+      zeus: "#222527",
       liver: "#4B4C4D",
       darkCoral: "#CC4E4E",
       brightSun: "#FCD34D",
