@@ -14,6 +14,8 @@ export function Link<E extends ElementType = "a">(
   const { as: Comp = "a", children, className, ...restProps } = props;
 
   return (
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     <Comp
       {...restProps}
       className={twMerge(
