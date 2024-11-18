@@ -50,7 +50,7 @@ export function ConnectButton({
     return (
       <Button
         {...btnProps}
-        isLoading={isSwitchChainPending}
+        isLoading={isSwitchChainPending || loading}
         onClick={() => {
           switchChain(
             { connector: connector, chainId },
