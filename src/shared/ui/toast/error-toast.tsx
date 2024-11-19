@@ -1,7 +1,5 @@
 import { useCopyToClipboard } from "usehooks-ts";
 
-import { Icon } from "../icon";
-
 type Props = {
   details?: string;
   message: string;
@@ -24,10 +22,10 @@ export const ErrorToast = ({ message, details }: Props) => {
             await copy(`message: ${message}; details: ${details}`);
           }}
         >
-          <Icon
+          {/* <Icon
             className="size-5 text-balticSea hover:brightness-105"
             name={value ? "check" : "copy"}
-          />
+          /> */}
           {value ? "Copied" : "Copy error message"}
         </button>
       </div>

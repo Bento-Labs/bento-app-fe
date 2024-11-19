@@ -6,7 +6,7 @@ import { PolymorphicProps } from "shared/types";
 
 import { Spinner } from "../spinner";
 
-export type Theme = "parisGreenGradient";
+export type Theme = "parisGreenGradient" | "mirage";
 
 export type Props = {
   className?: string;
@@ -48,6 +48,9 @@ export const Button = <E extends ElementType = "button">(
 
         theme === "parisGreenGradient" &&
           "bg-parisGreenGradient hover:brightness-105 active:brightness-105 disabled:bg-darkGrey disabled:bg-none",
+
+        theme === "mirage" &&
+          "bg-mirage hover:brightness-105 active:brightness-105 disabled:bg-darkGrey disabled:bg-none",
 
         className
       )}

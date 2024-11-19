@@ -2,7 +2,6 @@ import { ComponentProps } from "react";
 
 import { twMerge } from "tailwind-merge";
 
-import { Icon } from "../icon";
 import { Spinner } from "../spinner";
 import { Input } from "./input";
 
@@ -32,11 +31,7 @@ export const FormInput = ({
         className="absolute right-4 top-1/2 -translate-y-1/2"
         type="submit"
       >
-        {isLoading ? (
-          <Spinner className="size-4" />
-        ) : (
-          <Icon name="arrowRight" className="size-3.5 text-white/50" />
-        )}
+        {isLoading && <Spinner className="size-4" />}
       </button>
     </form>
   );

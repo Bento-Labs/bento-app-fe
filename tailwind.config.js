@@ -5,6 +5,7 @@ import animatedPlugin from "tailwindcss-animated";
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
+    // use it to name color https://colors.artyclick.com/color-name-finder/
     colors: {
       white: "#ffffff",
       transparent: "transparent",

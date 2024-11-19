@@ -12,7 +12,6 @@ import { ErrorComponent } from "pages/error";
 import { Mint } from "pages/mint";
 import { RqProvider } from "shared/providers/rq";
 import { WagmiProvider } from "shared/providers/wagmi";
-import { CloseButton } from "shared/ui/toast";
 
 import "react-toastify/dist/ReactToastify.css";
 
@@ -35,11 +34,7 @@ export const App = () => {
     <WagmiProvider>
       <RqProvider>
         <RouterProvider future={{ v7_startTransition: true }} router={router} />
-        <ToastContainer
-          closeButton={CloseButton}
-          icon={false}
-          position="bottom-right"
-        />
+        <ToastContainer theme="dark" icon={false} position="bottom-right" />
       </RqProvider>
     </WagmiProvider>
   );
