@@ -12,6 +12,7 @@ export default {
       black: "#000000",
       woodSmoke: "#0C0E0F",
       darkGrey: "#383838",
+      grey: "#909090",
       regentGrey: "#8F99A8",
       bluishGrey: "#7E8D9C",
       ironsideGrey: "#666666",
@@ -23,6 +24,7 @@ export default {
       brightSun: "#FCD34D",
       cornflowerBlue: "#7393F2",
       parisGreen: "#4CD48B",
+      aquaHaze: "#F3F3F3",
     },
     extend: {
       backgroundImage: {

@@ -50,7 +50,7 @@ export const Button = <E extends ElementType = "button">(
           "bg-parisGreenGradient hover:brightness-105 active:brightness-105 disabled:bg-darkGrey disabled:bg-none",
 
         theme === "mirage" &&
-          "bg-mirage hover:brightness-105 active:brightness-105 disabled:bg-darkGrey disabled:bg-none",
+          "bg-mirage  hover:brightness-105 active:brightness-105 disabled:bg-darkGrey disabled:bg-none",
 
         className
       )}

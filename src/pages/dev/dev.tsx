@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { CurrencyLabel, CurrencyValue } from "entities/currency";
 import { AppKitConnectWalletButton } from "features/connect-wallet";
 import { Button } from "shared/ui/button";
 import { Tab, Tabs } from "shared/ui/tabs";
@@ -15,6 +16,8 @@ export const Dev = () => {
     <div>
       DEV PAGE
       <AppKitConnectWalletButton />
+      <CurrencyValue symbol="ETH" value="0.12" />
+      <CurrencyLabel symbol="ETH" />
       <Button onClick={handleToast}>HEllo world</Button>
       <Button disabled>world</Button>
       <Button isLoading>world</Button>

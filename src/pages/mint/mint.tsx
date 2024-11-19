@@ -1,13 +1,16 @@
 import { useState } from "react";
 
+import { CurrencyLabel } from "entities/currency";
+import { SelectCurrency } from "features/select-currency";
 import { Header } from "pages/ui/layout";
-import { Button } from "shared/ui/button";
-import { Icon } from "shared/ui/icon";
-import { Tab, Tabs } from "shared/ui/tabs";
-import { TextGradient } from "shared/ui/text-gradient";
+
+import { TabType } from "./types";
+import { Input } from "./ui/input";
+import { TopControls } from "./ui/top-controls";
 
 export const Mint = () => {
-  const [activeTab, setActiveTab] = useState<"mint" | "redeem">("mint");
+  const [activeTab, setActiveTab] = useState<TabType>("mint");
+  const [payValue, setPayValue] = useState<string>();
 
   return (
     <>
@@ -16,37 +19,44 @@ export const Mint = () => {
         <h1 className="flex justify-center text-center text-lg font-medium">
           Mint
         </h1>
-        <div className="flex items-center">
-          <Tabs className="h-10">
-            <Tab
-              className="text-xs"
-              isActive={activeTab === "mint"}
-              onClick={() => setActiveTab("mint")}
-            >
-              <Icon name="plus" className="size-4" />
-              Mint
-            </Tab>
-            <Tab
-              className="text-xs"
-              isActive={activeTab === "redeem"}
-              onClick={() => setActiveTab("redeem")}
-            >
-              <Icon name="minus" className="size-4" />
-              Redeem
-            </Tab>
-          </Tabs>
-
-          <Button className="ml-auto h-10" theme="mirage">
-            <TextGradient>Basket Mode</TextGradient>
-          </Button>
-          <Button className="ml-1 size-10" theme="mirage">
-            <Icon name="reload" className="size-4" />
-          </Button>
-          <Button className="ml-1 size-10" theme="mirage">
-            <Icon name="settings" className="size-4" />
-          </Button>
-        </div>
-        <form></form>
+        <TopControls
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+          onReloadClick={() => {}}
+          onSettingsClick={() => {}}
+          onSwitchBasketMode={() => {}}
+        />
+        <Input
+          label="You Give"
+          className="mt-2"
+          slot={
+            <SelectCurrency
+              symbol="USDC"
+              options={[]}
+              onChange={() => {
+                //
+              }}
+            />
+          }
+          value={payValue}
+          usdValue="0"
+          balance={"20.2213"}
+          onInputChange={setPayValue}
+          decimals={6}
+          onMaxClick={() => {
+            console.log("hello world");
+            //
+          }}
+        />
+        <Input
+          label="You Receive"
+          className="mt-3"
+          slot={<CurrencyLabel symbol="bentoUSD" />}
+          value={payValue}
+          usdValue="0"
+          onInputChange={setPayValue}
+          decimals={6}
+        />
       </div>
     </>
   );
