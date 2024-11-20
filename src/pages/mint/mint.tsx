@@ -3,6 +3,7 @@ import { useState } from "react";
 import { CurrencyLabel } from "entities/currency";
 import { SelectCurrency } from "features/select-currency";
 import { Header } from "pages/ui/layout";
+import { Button } from "shared/ui/button";
 
 import { TabType } from "./types";
 import { Input } from "./ui/input";
@@ -15,7 +16,7 @@ export const Mint = () => {
   return (
     <>
       <Header />
-      <div className="mx-auto w-1/2 rounded-2xl border border-white/10 bg-woodSmoke px-5 py-6">
+      <div className="mx-auto mt-20 w-1/3 rounded-2xl border border-white/10 bg-woodSmoke px-5 py-6">
         <h1 className="flex justify-center text-center text-lg font-medium">
           Mint
         </h1>
@@ -32,7 +33,6 @@ export const Mint = () => {
           slot={
             <SelectCurrency
               symbol="USDC"
-              options={[]}
               onChange={() => {
                 //
               }}
@@ -57,6 +57,24 @@ export const Mint = () => {
           onInputChange={setPayValue}
           decimals={6}
         />
+
+        <div className="mt-5 flex justify-between">
+          <span className="font-medium text-boulder">
+            Select Network For Minting
+          </span>
+          <Button theme="mirage" className="ml-auto">
+            Ethereum
+          </Button>
+        </div>
+
+        <div className="mt-4 flex justify-between">
+          <span className="font-medium text-boulder">Mint BentoUSD+</span>
+          <span>no</span>
+        </div>
+
+        <Button className="mt-6 w-full rounded-xl py-4 text-lg">
+          Mint BentoUSD
+        </Button>
       </div>
     </>
   );

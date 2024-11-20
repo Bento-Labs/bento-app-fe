@@ -25,6 +25,7 @@ export default {
       cornflowerBlue: "#7393F2",
       parisGreen: "#4CD48B",
       aquaHaze: "#F3F3F3",
+      boulder: "#757B80",
     },
     extend: {
       backgroundImage: {

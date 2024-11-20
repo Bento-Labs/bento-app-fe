@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode } from "react";
 
 import { twMerge } from "tailwind-merge";
 
@@ -19,7 +19,6 @@ type Props = {
 };
 
 export const Input = (props: Props) => {
-  const ref = useRef<HTMLInputElement | null>(null);
   const {
     className,
     label,
@@ -32,10 +31,6 @@ export const Input = (props: Props) => {
     balance,
   } = props;
 
-  useEffect(() => {
-    ref.current?.focus();
-  }, []);
-
   return (
     <div
       className={twMerge(
@@ -47,7 +42,6 @@ export const Input = (props: Props) => {
 
       <div className="flex items-center justify-between gap-x-1.5">
         <CurrencyInput
-          ref={ref}
           value={value}
           decimals={decimals}
           placeholder="0"

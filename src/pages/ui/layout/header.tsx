@@ -1,4 +1,7 @@
-import { AppKitConnectWalletButton } from "features/connect-wallet";
+import {
+  AppKitConnectWalletButton,
+  // ConnectWalletButton,
+} from "features/connect-wallet";
 
 export const Header = () => {
   return (
@@ -6,6 +9,12 @@ export const Header = () => {
       <img className="w-[113px]" src="/logo.png" alt="log" />
 
       <AppKitConnectWalletButton className="ml-auto" />
+
+      {/* {import.meta.env.DEV ? (
+        <ConnectWalletButton className="ml-auto" />
+      ) : (
+        <AppKitConnectWalletButton className="ml-auto" />
+      )} */}
     </nav>
   );
 };

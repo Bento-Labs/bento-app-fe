@@ -6,7 +6,6 @@ import CurrencyInput from "react-currency-input-field";
 import { twMerge } from "tailwind-merge";
 
 interface Props {
-  ref?: CurrencyInputProps["ref"];
   className?: string;
   disabled?: boolean;
   placeholder?: string;
@@ -20,7 +19,6 @@ interface Props {
 
 export function Component(props: Props) {
   const {
-    ref,
     className,
     disabled = false,
     placeholder = "0.0",
@@ -34,7 +32,6 @@ export function Component(props: Props) {
 
   return (
     <CurrencyInput
-      ref={ref}
       id={id}
       disabled={disabled}
       name={name}

@@ -9,7 +9,7 @@ type Props = {
   disabled?: boolean;
   className?: string;
   symbol: string;
-  options: Option[];
+  options?: Option[];
 
   onChange: (option: Option) => void;
 };
