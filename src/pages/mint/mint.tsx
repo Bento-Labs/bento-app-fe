@@ -1,23 +1,35 @@
 import { useState } from "react";
 
-import { CurrencyLabel } from "entities/currency";
-import { SelectCurrency } from "features/select-currency";
+import { useChainId } from "wagmi";
+
+import { Currency, CurrencyLabel } from "entities/currency";
+import { currenciesList, SelectCurrency } from "features/select-currency";
 import { Header } from "pages/ui/layout";
 import { Button } from "shared/ui/button";
+import { Toggle } from "shared/ui/toggle";
 
 import { TabType } from "./types";
 import { Input } from "./ui/input";
 import { TopControls } from "./ui/top-controls";
 
 export const Mint = () => {
+  const chainId = useChainId();
+  const options = currenciesList.filter((c) => {
+    return c.chainId === chainId;
+  });
+
+  const [isMintBentoPlus, setIsMintBentoPlus] = useState(false);
   const [activeTab, setActiveTab] = useState<TabType>("mint");
+  const [currency, setCurrency] = useState<Currency>(options[0]);
   const [payValue, setPayValue] = useState<string>();
+
+  console.log(currency);
 
   return (
     <>
       <Header />
       <div className="mx-auto mt-20 w-1/3 rounded-2xl border border-white/10 bg-woodSmoke px-5 py-6">
-        <h1 className="flex justify-center text-center text-lg font-medium">
+        <h1 className="mb-4 flex justify-center text-center text-lg font-medium">
           Mint
         </h1>
         <TopControls
@@ -33,9 +45,8 @@ export const Mint = () => {
           slot={
             <SelectCurrency
               symbol="USDC"
-              onChange={() => {
-                //
-              }}
+              options={options}
+              onChange={setCurrency}
             />
           }
           value={payValue}
@@ -58,7 +69,7 @@ export const Mint = () => {
           decimals={6}
         />
 
-        <div className="mt-5 flex justify-between">
+        <div className="mt-5 flex items-center justify-between">
           <span className="font-medium text-boulder">
             Select Network For Minting
           </span>
@@ -67,9 +78,22 @@ export const Mint = () => {
           </Button>
         </div>
 
-        <div className="mt-4 flex justify-between">
-          <span className="font-medium text-boulder">Mint BentoUSD+</span>
-          <span>no</span>
+        <div className="mt-4 flex items-center">
+          <span className="mr-auto inline-flex font-medium text-boulder">
+            Mint BentoUSD+
+          </span>
+          <label className="flex cursor-pointer select-none items-center gap-x-2">
+            <span className="inline-flex font-medium text-brightSun">
+              {isMintBentoPlus ? "Yes" : "No"}
+            </span>
+            <Toggle
+              className="shrink-0"
+              checked={isMintBentoPlus}
+              onChange={() => {
+                setIsMintBentoPlus(!isMintBentoPlus);
+              }}
+            />
+          </label>
         </div>
 
         <Button className="mt-6 w-full rounded-xl py-4 text-lg">
