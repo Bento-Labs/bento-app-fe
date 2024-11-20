@@ -23,7 +23,7 @@ export const Body = (props: PropsWithChildren<Props>) => {
           className="absolute right-3 top-3 p-3 text-white/35 hover:text-white/50"
           onClick={onClose}
         >
-          <Icon name="cross" className="size-3" />
+          <Icon name="plus" className="size-3" />
         </button>
       )}
 
