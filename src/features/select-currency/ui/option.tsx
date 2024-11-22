@@ -1,7 +1,7 @@
 import { twJoin, twMerge } from "tailwind-merge";
-import { erc20Abi } from "viem";
-import { useAccount, useReadContract } from "wagmi";
+import { formatUnits } from "viem";
 
+import { useBalanceQuery } from "entities/currency";
 import { Img } from "shared/ui/img";
 import { formatCurrency, shortAddress } from "shared/web3/utils";
 
@@ -16,24 +16,14 @@ type Props = {
 };
 
 export const Option = ({ className, option, isSelected, onClick }: Props) => {
-  const { icon, symbol, address } = option;
-  const { address: accountAddress } = useAccount();
+  const { symbol, address, chainId, logoURI, decimals } = option;
 
-  const value = "22";
   const usdValue = "24.12";
 
-  const query = useReadContract({
-    abi: erc20Abi,
-    address,
-    functionName: "balanceOf",
-    account: accountAddress,
+  const query = useBalanceQuery(address, {
+    chainId,
+    select: (balance) => formatUnits(balance, decimals),
   });
-
-  console.log(query);
-
-  const balance = query.data;
-
-  console.log(balance);
 
   return (
     <li
@@ -45,7 +35,7 @@ export const Option = ({ className, option, isSelected, onClick }: Props) => {
       )}
     >
       <Img
-        src={icon}
+        src={logoURI}
         className="inline-flex size-[38px] rounded-full"
         alt={symbol}
       />
@@ -56,9 +46,11 @@ export const Option = ({ className, option, isSelected, onClick }: Props) => {
         <span className="mt-1 text-xs text-grey">{shortAddress(address)}</span>
       </div>
       <div className="ml-auto flex flex-col">
-        {value && <span className="font-medium text-white">{value}</span>}
+        <span className="text-right font-medium text-white">
+          {query.data ?? 0}
+        </span>
         {usdValue && (
-          <span className="mt-1 text-xs text-grey">
+          <span className="mt-1 text-right text-xs text-grey">
             {formatCurrency(usdValue, { decimalScale: 2, prefix: "$" })}
           </span>
         )}

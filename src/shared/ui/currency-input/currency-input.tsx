@@ -1,11 +1,11 @@
 import type { CurrencyInputProps } from "react-currency-input-field";
 
-import type { FocusEventHandler } from "react";
+import { forwardRef, type FocusEventHandler } from "react";
 import CurrencyInput from "react-currency-input-field";
 
 import { twMerge } from "tailwind-merge";
 
-interface Props {
+type CustomProps = {
   className?: string;
   disabled?: boolean;
   placeholder?: string;
@@ -15,9 +15,11 @@ interface Props {
   decimals: number;
   onBlur?: FocusEventHandler<HTMLInputElement>;
   onChange: CurrencyInputProps["onValueChange"];
-}
+};
 
-export function Component(props: Props) {
+export type Props = CustomProps & Omit<CurrencyInputProps, keyof CustomProps>;
+
+export const Component = forwardRef<HTMLInputElement, Props>((props, ref) => {
   const {
     className,
     disabled = false,
@@ -28,10 +30,14 @@ export function Component(props: Props) {
     decimals,
     onBlur,
     onChange,
+
+    ...rest
   } = props;
 
   return (
     <CurrencyInput
+      {...rest}
+      ref={ref}
       id={id}
       disabled={disabled}
       name={name}
@@ -53,4 +59,4 @@ export function Component(props: Props) {
       transformRawValue={(str) => (str === "-" ? "" : str)}
     />
   );
-}
+});

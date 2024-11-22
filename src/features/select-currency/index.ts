@@ -1,2 +1,2 @@
 export { Select as SelectCurrency } from "./ui/select";
-export { currenciesList } from "./const";
+export { currenciesList, busd } from "../../entities/currency/const";

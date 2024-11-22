@@ -1,34 +1,39 @@
 import { ReactNode } from "react";
+import { Control, FieldValues, Path } from "react-hook-form";
 
 import { twMerge } from "tailwind-merge";
 
+import { RHFCurrencyInput } from "shared/rhf/currency-input";
 import { Button } from "shared/ui/button";
-import { CurrencyInput } from "shared/ui/currency-input";
 import { formatCurrency } from "shared/web3/utils";
 
-type Props = {
+type Props<T extends FieldValues, N extends Path<T>> = {
+  control: Control<T>;
+  name: N;
   label: ReactNode;
   className?: string;
-  value: string | undefined;
   decimals: number;
-  onInputChange: (value: string | undefined) => void;
   onMaxClick?: () => void;
   slot?: ReactNode;
   usdValue?: string;
-  balance?: string;
+  bottomValue?: string;
+  bottomLabel?: string;
 };
 
-export const Input = (props: Props) => {
+export const Input = <T extends FieldValues, N extends Path<T>>(
+  props: Props<T, N>
+) => {
   const {
+    control,
+    name,
     className,
     label,
-    value,
     decimals,
-    onInputChange,
     onMaxClick,
     slot,
     usdValue,
-    balance,
+    bottomLabel = "Balance",
+    bottomValue,
   } = props;
 
   return (
@@ -41,13 +46,11 @@ export const Input = (props: Props) => {
       {label && <div className="mb-1 text-sm text-bluishGrey">{label}</div>}
 
       <div className="flex items-center justify-between gap-x-1.5">
-        <CurrencyInput
-          value={value}
+        <RHFCurrencyInput
+          control={control}
+          name={name}
           decimals={decimals}
           placeholder="0"
-          onChange={(value) => {
-            onInputChange(value);
-          }}
         />
         {slot}
       </div>
@@ -58,9 +61,9 @@ export const Input = (props: Props) => {
           </span>
         )}
 
-        {balance && (
+        {bottomValue && (
           <span className="mr-2 inline-flex text-sm text-bluishGrey">
-            Balance: {formatCurrency(balance, { decimalScale: 2 })}
+            {bottomLabel}: {formatCurrency(bottomValue, { decimalScale: 2 })}
           </span>
         )}
         {onMaxClick && (

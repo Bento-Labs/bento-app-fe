@@ -1,8 +1,8 @@
-import { AppKitNetwork, sepolia, mainnet } from "@reown/appkit/networks";
+import { AppKitNetwork, sepolia } from "@reown/appkit/networks";
 import { createAppKit } from "@reown/appkit/react";
 import { WagmiAdapter } from "@reown/appkit-adapter-wagmi";
 
-const networks: [AppKitNetwork, ...AppKitNetwork[]] = [mainnet, sepolia];
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [sepolia];
 
 const projectId = "47daa50416effcf4b1f3d7bc76013da9";
 
@@ -36,9 +36,3 @@ createAppKit({
 
 export type Config = typeof wagmiAdapter.wagmiConfig;
 export const config = wagmiAdapter.wagmiConfig;
-
-declare module "wagmi" {
-  interface Register {
-    config: Config;
-  }
-}

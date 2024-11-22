@@ -5,12 +5,15 @@
 @layer base {
   html {
     font-family: "Inter", sans-serif;
-    @apply flex flex-col grow box-border text-white bg-black;
+    @apply flex flex-col min-h-full box-border text-white bg-black;
   }
 
   body {
     @apply flex flex-col grow box-border;
     box-sizing: border-box;
+  }
+  #root {
+    @apply flex flex-col grow;
   }
 
   @font-face {

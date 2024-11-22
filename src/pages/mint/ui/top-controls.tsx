@@ -5,13 +5,14 @@ import { Icon } from "shared/ui/icon";
 import { Tab, Tabs } from "shared/ui/tabs";
 import { TextGradient } from "shared/ui/text-gradient";
 
-import { TabType } from "../types";
+import { Mode, TabType } from "../types";
 
 type Props = {
   className?: string;
   activeTab: TabType;
+  mode: Mode;
   onTabChange: (activeTab: TabType) => void;
-  onSwitchBasketMode: () => void;
+  onModeChange: (mode: Mode) => void;
   onReloadClick: () => void;
   onSettingsClick: () => void;
 };
@@ -20,8 +21,9 @@ export const TopControls = (props: Props) => {
   const {
     className,
     activeTab,
+    mode,
     onTabChange,
-    onSwitchBasketMode,
+    onModeChange,
     onReloadClick,
     onSettingsClick,
   } = props;
@@ -49,10 +51,14 @@ export const TopControls = (props: Props) => {
       <Button
         className="ml-auto h-10 gap-x-2"
         theme="mirage"
-        onClick={onSwitchBasketMode}
+        onClick={() => {
+          onModeChange(mode === "basket" ? "single" : "basket");
+        }}
       >
         <Icon name="switch" className="size-4" />
-        <TextGradient>Basket Mode</TextGradient>
+        <TextGradient>
+          {mode === "basket" ? "Basket Mode" : "Single Mode"}
+        </TextGradient>
       </Button>
       <Button className="ml-1 size-10" theme="mirage" onClick={onReloadClick}>
         <Icon name="reload" className="size-4" />

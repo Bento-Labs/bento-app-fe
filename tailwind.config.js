@@ -12,6 +12,8 @@ export default {
       black: "#000000",
       woodSmoke: "#0C0E0F",
       darkGrey: "#383838",
+      battleshipGrey: "#818181",
+      charcoalGrey: "#3E4246",
       grey: "#909090",
       regentGrey: "#8F99A8",
       bluishGrey: "#7E8D9C",

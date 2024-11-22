@@ -1,7 +1,7 @@
 import { Address } from "viem";
 
 export type Currency = {
-  icon: string;
+  logoURI: string;
   decimals: number;
   chainId: number;
   address: Address;

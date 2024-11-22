@@ -12,6 +12,7 @@ export const Tabs = (props: PropsWithChildren<{ className?: string }>) => {
   return (
     <motion.div
       layout
+      layoutRoot
       {...restProps}
       className={twMerge("flex rounded-md bg-mirage p-0.5", className)}
     >
