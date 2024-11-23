@@ -1,4 +1,4 @@
-import { Currency } from "entities/currency";
+import { Currency } from "shared/config";
 
 export type TabType = "mint" | "redeem";
 

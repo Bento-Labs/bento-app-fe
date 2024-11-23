@@ -1,8 +1,10 @@
 import { twJoin, twMerge } from "tailwind-merge";
 import { formatUnits } from "viem";
 
-import { useBalanceQuery } from "entities/currency";
+import { useBalanceQuery, useLatestPriceQuery } from "entities/currency";
 import { Img } from "shared/ui/img";
+import { Spinner } from "shared/ui/spinner";
+import { mul } from "shared/utils";
 import { formatCurrency, shortAddress } from "shared/web3/utils";
 
 import { Option as OptionType } from "../types";
@@ -18,18 +20,25 @@ type Props = {
 export const Option = ({ className, option, isSelected, onClick }: Props) => {
   const { symbol, address, chainId, logoURI, decimals } = option;
 
-  const usdValue = "24.12";
+  const latestPriceQuery = useLatestPriceQuery(symbol, {
+    select: ({ decimals, data }) => {
+      const price = data[1];
+      return formatUnits(price, decimals);
+    },
+  });
 
   const query = useBalanceQuery(address, {
     chainId,
     select: (balance) => formatUnits(balance, decimals),
   });
 
+  const usdValue = mul(latestPriceQuery.data, query.data)?.toString();
+
   return (
     <li
       onClick={onClick}
       className={twMerge(
-        "relative flex cursor-pointer items-center gap-x-4 rounded-md px-4 py-2.5 text-xl text-white hover:bg-balticSea active:brightness-125",
+        "relative flex cursor-pointer items-center gap-x-4 rounded-md px-4 py-2.5 text-xl text-white transition-colors hover:bg-balticSea active:brightness-125",
         isSelected && "bg-balticSea",
         className
       )}
@@ -51,7 +60,12 @@ export const Option = ({ className, option, isSelected, onClick }: Props) => {
         </span>
         {usdValue && (
           <span className="mt-1 text-right text-xs text-grey">
-            {formatCurrency(usdValue, { decimalScale: 2, prefix: "$" })}
+            {(latestPriceQuery.isPending || query.isPending) && !usdValue && (
+              <Spinner className="size-2" />
+            )}
+
+            {usdValue &&
+              formatCurrency(usdValue, { decimalScale: 2, prefix: "$" })}
           </span>
         )}
       </div>

@@ -6,7 +6,7 @@ import { Config } from "shared/providers/wagmi";
 type Options<TData = bigint> = {
   account?: Address;
   chainId?: number;
-  select?: (data: bigint) => TData;
+  select?: (balance: bigint) => TData;
 };
 
 export const useBalanceQuery = <TData = bigint>(

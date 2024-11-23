@@ -1,3 +1,3 @@
-import { Currency } from "entities/currency";
+import { Currency } from "shared/config";
 
 export type Option = Currency;

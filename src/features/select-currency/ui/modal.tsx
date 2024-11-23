@@ -21,7 +21,7 @@ export const Modal = (props: Props) => {
           backgroundImage: `url(/bg-stars.png)`,
         }}
       >
-        <M.Content className="mx-auto w-1/3 overflow-scroll bg-black">
+        <M.Content className="mx-auto w-1/4 min-w-[300px] overflow-scroll bg-black">
           <h2 className="border-b border-balticSea px-4 py-6 font-medium text-white">
             Select Token
           </h2>

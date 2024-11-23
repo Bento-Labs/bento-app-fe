@@ -19,6 +19,7 @@ export const SelectCurrency = ({ control }: Props) => {
 
   return (
     <SelectCurrencyComponent
+      logoURI={currencyController.field.value.logoURI}
       symbol={currencyController.field.value.symbol}
       options={options}
       onChange={currencyController.field.onChange}

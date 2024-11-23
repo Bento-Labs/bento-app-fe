@@ -1,9 +1,9 @@
 import { useChainId } from "wagmi";
 
-import { busd } from "../const";
+import { busdConfig } from "../const";
 
 export const useBento = () => {
   const chainId = useChainId();
 
-  return busd[chainId];
+  return busdConfig[chainId];
 };

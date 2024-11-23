@@ -1,15 +1,11 @@
 import { useMemo } from "react";
 
-import { useChainId } from "wagmi";
-
-import { currenciesList } from "features/select-currency";
+import { useCollaterals } from "shared/config";
 
 export const useCurrenciesOptions = () => {
-  const chainId = useChainId();
+  const collaterals = useCollaterals();
 
   return useMemo(() => {
-    return currenciesList.filter((c) => {
-      return c.chainId === chainId;
-    });
-  }, [chainId]);
+    return Object.values(collaterals);
+  }, [collaterals]);
 };

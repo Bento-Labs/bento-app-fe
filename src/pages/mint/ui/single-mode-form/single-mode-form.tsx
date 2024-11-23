@@ -9,15 +9,15 @@ import { formatUnits } from "viem";
 
 import { CurrencyLabel, useBalanceQuery } from "entities/currency";
 import { useCurrenciesOptions } from "pages/mint/hooks/use-currencies-options";
+import { useBento } from "shared/config";
 import { Button } from "shared/ui/button";
 
 import { SingleModeFormType } from "../../types";
-import { BentoPlusToggle } from "../bento-plus-toggle";
 import { Input } from "../input";
-import { SelectNetwork } from "../select-network";
 import { SelectCurrency } from "./select-currency";
 
 export const SingleModeForm = () => {
+  const bento = useBento();
   const options = useCurrenciesOptions();
 
   const { handleSubmit, control } = useForm<SingleModeFormType>({
@@ -34,13 +34,6 @@ export const SingleModeForm = () => {
     select: (data) => formatUnits(data, currency.decimals),
   });
 
-  console.log(
-    balanceQuery.data,
-    balanceQuery.error,
-    balanceQuery.status,
-    balanceQuery.fetchStatus
-  );
-
   const handleSuccess: SubmitHandler<SingleModeFormType> = () => {
     //
   };
@@ -56,7 +49,7 @@ export const SingleModeForm = () => {
         className="mt-2"
         slot={<SelectCurrency control={control} />}
         usdValue="0"
-        balance={balanceQuery.data}
+        bottomValue={balanceQuery.data}
         decimals={6}
         onMaxClick={() => {
           console.log("hello world");
@@ -68,14 +61,14 @@ export const SingleModeForm = () => {
         name="receiveValue"
         label="You Receive"
         className="mt-3"
-        slot={<CurrencyLabel symbol="bentoUSD" />}
+        slot={<CurrencyLabel symbol={bento.symbol} icon={bento.logoURI} />}
         usdValue="0"
         decimals={6}
       />
 
-      <SelectNetwork className="mt-5" />
+      {/* <SelectNetwork className="mt-5" />
 
-      <BentoPlusToggle className="mt-4" checked={false} onChange={() => {}} />
+      <BentoPlusToggle className="mt-4" checked={false} onChange={() => {}} /> */}
 
       <Button type="submit" className="mt-6 w-full rounded-xl py-4 text-lg">
         Mint BentoUSD

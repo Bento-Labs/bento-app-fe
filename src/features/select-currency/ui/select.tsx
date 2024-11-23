@@ -9,13 +9,14 @@ type Props = {
   disabled?: boolean;
   className?: string;
   symbol: string;
+  logoURI?: string;
   options: Option[];
 
   onChange: (option: Option) => void;
 };
 
 export const Select = (props: Props) => {
-  const { symbol, className, options, onChange, disabled } = props;
+  const { symbol, className, options, onChange, disabled, logoURI } = props;
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -23,6 +24,7 @@ export const Select = (props: Props) => {
       <CurrencyLabel
         className={className}
         disabled={disabled}
+        icon={logoURI}
         symbol={symbol}
         onClick={() => {
           setIsOpen(true);
@@ -32,7 +34,10 @@ export const Select = (props: Props) => {
       {isOpen && (
         <Modal
           onClose={() => setIsOpen(false)}
-          onSelect={onChange}
+          onSelect={(currency) => {
+            setIsOpen(false);
+            onChange(currency);
+          }}
           options={options}
           selectedSymbol={symbol}
         />

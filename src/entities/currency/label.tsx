@@ -18,7 +18,8 @@ export function Label(props: Props) {
       onClick={onClick}
       className={twMerge(
         "relative flex shrink-0 items-center space-x-1.5 text-xl font-bold text-white",
-        onClick && "cursor-pointer  pl-[5px] pr-[8px] hover:bg-white/5",
+        onClick &&
+          "cursor-pointer rounded-lg pl-[5px] pr-[8px] hover:bg-white/5",
         disabled && "pointer-events-none cursor-default",
         className
       )}
