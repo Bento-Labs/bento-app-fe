@@ -14,7 +14,7 @@ export const Mint = () => {
   return (
     <>
       <Header />
-      <div className="m-auto w-1/3 min-w-[500px] rounded-2xl border border-white/10 bg-woodSmoke px-5 py-6">
+      <div className="mx-auto mt-8 w-1/3 min-w-[500px] rounded-2xl border border-white/10 bg-woodSmoke px-5 py-6">
         <h1 className="mb-4 flex justify-center text-center text-lg font-medium">
           Mint
         </h1>
