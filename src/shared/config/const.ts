@@ -10,7 +10,7 @@ export type Currency = {
   name: string;
 };
 
-export const chainLinkAggregatorsAddresses: Record<
+export const chainLinkAggregatorConfig: Record<
   number,
   Record<string, Address>
 > = {
@@ -117,4 +117,8 @@ export const busdConfig: Record<number, Currency> = {
     decimals: 18,
     logoURI: "/bento-token.png",
   },
+};
+
+export const bentoVaultCoreConfig: Record<number, Address> = {
+  [sepolia.id]: "0x6ae08082387AaBcA74830054B1f3ba8a0571F9c6",
 };

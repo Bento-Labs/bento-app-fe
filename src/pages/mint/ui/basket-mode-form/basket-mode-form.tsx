@@ -6,18 +6,25 @@ import {
   useForm,
 } from "react-hook-form";
 
+import { useChainId } from "wagmi";
+
 import { CurrencyLabel } from "entities/currency";
 import { useCurrenciesOptions } from "pages/mint/hooks/use-currencies-options";
+import { useWeightsQuery } from "pages/mint/hooks/use-weights-query";
 import { BasketModeFormType } from "pages/mint/types";
-import { useBento } from "shared/config";
+import { busdConfig } from "shared/config";
 
 import { Input } from "../input";
 import { SubmitButton } from "../submit-button";
 import { CollateralInput } from "./collateral-input";
 
 export const BasketModeForm = () => {
+  const chainId = useChainId();
   const options = useCurrenciesOptions();
-  const bento = useBento();
+  const bento = busdConfig[chainId];
+  const weightsQuery = useWeightsQuery();
+
+  console.log(weightsQuery);
 
   const collaterals: BasketModeFormType["collaterals"] = useMemo(() => {
     return options.map((op) => {

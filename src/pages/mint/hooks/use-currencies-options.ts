@@ -1,9 +1,12 @@
 import { useMemo } from "react";
 
-import { useCollaterals } from "shared/config";
+import { useChainId } from "wagmi";
+
+import { collateralsConfig } from "shared/config/const";
 
 export const useCurrenciesOptions = () => {
-  const collaterals = useCollaterals();
+  const chainId = useChainId();
+  const collaterals = collateralsConfig[chainId];
 
   return useMemo(() => {
     return Object.values(collaterals);

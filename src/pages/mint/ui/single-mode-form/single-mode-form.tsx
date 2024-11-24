@@ -8,6 +8,7 @@ import {
 } from "react-hook-form";
 
 import { formatUnits } from "viem";
+import { useChainId } from "wagmi";
 
 import {
   CurrencyLabel,
@@ -16,7 +17,7 @@ import {
 } from "entities/currency";
 import { useCurrenciesOptions } from "pages/mint/hooks/use-currencies-options";
 import { checkBalance } from "pages/mint/utils/validations";
-import { useBento } from "shared/config";
+import { busdConfig } from "shared/config";
 import { mul } from "shared/utils";
 
 import { SingleModeFormType } from "../../types";
@@ -25,7 +26,8 @@ import { SubmitButton } from "../submit-button";
 import { SelectCurrency } from "./select-currency";
 
 export const SingleModeForm = () => {
-  const bento = useBento();
+  const chainId = useChainId();
+  const bento = busdConfig[chainId];
   const options = useCurrenciesOptions();
 
   const form = useForm<SingleModeFormType>({

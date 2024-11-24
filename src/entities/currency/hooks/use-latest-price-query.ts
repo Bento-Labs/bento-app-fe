@@ -3,7 +3,7 @@ import invariant from "tiny-invariant";
 import { Address, formatUnits, getContract, PublicClient } from "viem";
 import { useAccount, useChainId, usePublicClient } from "wagmi";
 
-import { useChainlinkAggregatorAddress } from "shared/config";
+import { chainLinkAggregatorConfig } from "shared/config";
 import { chainlinkAggregatorV3ABI } from "shared/config/abi";
 import { QueryOptions } from "shared/types";
 
@@ -101,7 +101,6 @@ export const useLatestPriceQuery = <TData = Result>(
   symbol: string,
   options?: QueryOptions<Result, unknown, TData>
 ) => {
-  const aggregatorAddress = useChainlinkAggregatorAddress(symbol);
   const { address: accountAddress } = useAccount();
   const chainId = useChainId();
   const pc = usePublicClient({ chainId });
@@ -109,7 +108,7 @@ export const useLatestPriceQuery = <TData = Result>(
   return useQuery(
     getQueryOptions<TData>(
       {
-        address: aggregatorAddress,
+        address: chainLinkAggregatorConfig[chainId][symbol],
         account: accountAddress,
         chainId,
         client: pc,
