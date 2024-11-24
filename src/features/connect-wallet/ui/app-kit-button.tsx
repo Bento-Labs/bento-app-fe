@@ -20,7 +20,8 @@ export function ConnectButton({
   switchChainContent = "Switch Chain",
   ...props
 }: Props) {
-  const { address, isDisconnected, chain, connector } = useAccount();
+  const { address, isDisconnected, chain, connector, isConnecting } =
+    useAccount();
   const chainId = useChainId();
   const { switchChain, isPending: isSwitchChainPending } = useSwitchChain();
   const { open } = useAppKit();
@@ -34,13 +35,13 @@ export function ConnectButton({
 
   const btnProps: ComponentProps<typeof Button> = {
     className: twMerge("gap-x-1.5 whitespace-nowrap", className),
-    isLoading: loading,
+    isLoading: isSwitchChainPending || loading || isConnecting,
     ...props,
   };
 
   if (isDisconnected || loading) {
     return (
-      <Button {...btnProps} isLoading={loading} onClick={handleConnect}>
+      <Button {...btnProps} onClick={handleConnect}>
         {connectContent}
       </Button>
     );
@@ -50,7 +51,6 @@ export function ConnectButton({
     return (
       <Button
         {...btnProps}
-        isLoading={isSwitchChainPending || loading}
         onClick={() => {
           switchChain(
             { connector: connector, chainId },
@@ -68,7 +68,7 @@ export function ConnectButton({
   }
 
   return (
-    <Button {...btnProps} isLoading={loading} onClick={() => disconnect()}>
+    <Button {...btnProps} onClick={() => disconnect()}>
       {shortAddress(address, 4, 4)}
     </Button>
   );

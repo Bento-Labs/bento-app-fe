@@ -1,6 +1,6 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import invariant from "tiny-invariant";
-import { Address, getContract, PublicClient } from "viem";
+import { Address, formatUnits, getContract, PublicClient } from "viem";
 import { useAccount, useChainId, usePublicClient } from "wagmi";
 
 import { useChainlinkAggregatorAddress } from "shared/config";
@@ -62,17 +62,34 @@ type Params = {
 const getLatestPriceQueryKey = (params: Omit<Params, "client">) => {
   return ["latest-price", params.account, params.address, params.chainId];
 };
-const getQueryOptions = <TData = FetchLatestPriceResult>(
+
+const withFormatted = ({ decimals, data }: FetchLatestPriceResult) => {
+  const price = data[1];
+  const formatted = formatUnits(price, decimals);
+
+  return {
+    formatted: formatted,
+    price,
+    decimals,
+    raw: { decimals, data },
+  };
+};
+
+type Result = ReturnType<typeof withFormatted>;
+
+const getQueryOptions = <TData = Result>(
   params: Params,
-  options?: QueryOptions<FetchLatestPriceResult, unknown, TData>
+  options?: QueryOptions<Result, unknown, TData>
 ) => {
   const { client, account } = params;
   return queryOptions({
     queryKey: getLatestPriceQueryKey(params),
-    queryFn: () => {
+    queryFn: async () => {
       invariant(client, "useLatestPriceQuery. client is undefined");
       invariant(account, "useLatestPriceQuery. account is undefined");
-      return fetchLatestPriceQuery({ ...params, client, account });
+      const data = await fetchLatestPriceQuery({ ...params, client, account });
+
+      return withFormatted(data);
     },
     staleTime: 1000 * 5,
     enabled: Boolean(account && client),
@@ -80,9 +97,9 @@ const getQueryOptions = <TData = FetchLatestPriceResult>(
   });
 };
 
-export const useLatestPriceQuery = <TData = FetchLatestPriceResult>(
+export const useLatestPriceQuery = <TData = Result>(
   symbol: string,
-  options?: QueryOptions<FetchLatestPriceResult, unknown, TData>
+  options?: QueryOptions<Result, unknown, TData>
 ) => {
   const aggregatorAddress = useChainlinkAggregatorAddress(symbol);
   const { address: accountAddress } = useAccount();

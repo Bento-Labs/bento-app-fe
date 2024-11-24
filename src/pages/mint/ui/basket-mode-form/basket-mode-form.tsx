@@ -10,9 +10,9 @@ import { CurrencyLabel } from "entities/currency";
 import { useCurrenciesOptions } from "pages/mint/hooks/use-currencies-options";
 import { BasketModeFormType } from "pages/mint/types";
 import { useBento } from "shared/config";
-import { Button } from "shared/ui/button";
 
 import { Input } from "../input";
+import { SubmitButton } from "../submit-button";
 import { CollateralInput } from "./collateral-input";
 
 export const BasketModeForm = () => {
@@ -81,9 +81,7 @@ export const BasketModeForm = () => {
 
       {/* <SelectNetwork className="mt-5" /> */}
       {/* <BentoPlusToggle className="mt-4" checked={false} onChange={() => {}} /> */}
-      <Button type="submit" className="mt-6 w-full rounded-xl py-4 text-lg">
-        Mint BentoUSD
-      </Button>
+      <SubmitButton className="mt-6 w-full rounded-xl py-4 text-lg" />
     </form>
   );
 };

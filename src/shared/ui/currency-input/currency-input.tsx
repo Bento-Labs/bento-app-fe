@@ -1,4 +1,7 @@
-import type { CurrencyInputProps } from "react-currency-input-field";
+import type {
+  CurrencyInputOnChangeValues,
+  CurrencyInputProps,
+} from "react-currency-input-field";
 
 import { forwardRef, type FocusEventHandler } from "react";
 import CurrencyInput from "react-currency-input-field";
@@ -11,10 +14,14 @@ type CustomProps = {
   placeholder?: string;
   id?: string;
   name?: string;
-  value: string | undefined;
+  value: string;
   decimals: number;
   onBlur?: FocusEventHandler<HTMLInputElement>;
-  onChange: CurrencyInputProps["onValueChange"];
+  onChange: (
+    value: string,
+    name?: string,
+    values?: CurrencyInputOnChangeValues
+  ) => void;
 };
 
 export type Props = CustomProps & Omit<CurrencyInputProps, keyof CustomProps>;
@@ -53,7 +60,10 @@ export const Component = forwardRef<HTMLInputElement, Props>((props, ref) => {
       decimalsLimit={decimals}
       disableAbbreviations
       disableGroupSeparators
-      onValueChange={onChange}
+      onValueChange={(value, ...args) => {
+        const val = value ?? "";
+        onChange(val, ...args);
+      }}
       pattern="\d*"
       placeholder={placeholder}
       transformRawValue={(str) => (str === "-" ? "" : str)}

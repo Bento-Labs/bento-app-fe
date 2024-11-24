@@ -1,28 +1,32 @@
-import { Control, useController } from "react-hook-form";
+import { Control, useFormContext, useWatch } from "react-hook-form";
 
-import { SelectCurrency as SelectCurrencyComponent } from "features/select-currency";
+import {
+  Option,
+  SelectCurrency as SelectCurrencyComponent,
+} from "features/select-currency";
 
 import { useCurrenciesOptions } from "../../hooks/use-currencies-options";
 import { SingleModeFormType } from "../../types";
 
 type Props = {
   control: Control<SingleModeFormType>;
+  onChange?: (option: Option) => void;
 };
 
 export const SelectCurrency = ({ control }: Props) => {
+  const { reset } = useFormContext<SingleModeFormType>();
   const options = useCurrenciesOptions();
-  const currencyController = useController<SingleModeFormType, "currency">({
-    name: "currency",
-    control: control,
-    defaultValue: options[0],
-  });
+
+  const currency = useWatch({ control, name: "currency" });
 
   return (
     <SelectCurrencyComponent
-      logoURI={currencyController.field.value.logoURI}
-      symbol={currencyController.field.value.symbol}
+      logoURI={currency.logoURI}
+      symbol={currency.symbol}
       options={options}
-      onChange={currencyController.field.onChange}
+      onChange={(option) => {
+        reset({ currency: option, payValue: "", receiveValue: "" });
+      }}
     />
   );
 };

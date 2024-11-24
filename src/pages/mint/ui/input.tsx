@@ -1,10 +1,16 @@
 import { ReactNode } from "react";
-import { Control, FieldValues, Path } from "react-hook-form";
+import {
+  Control,
+  FieldValues,
+  Path,
+  useController,
+  UseControllerProps,
+} from "react-hook-form";
 
-import { twMerge } from "tailwind-merge";
+import { twJoin, twMerge } from "tailwind-merge";
 
-import { RHFCurrencyInput } from "shared/rhf/currency-input";
 import { Button } from "shared/ui/button";
+import { CurrencyInput } from "shared/ui/currency-input";
 import { formatCurrency } from "shared/web3/utils";
 
 type Props<T extends FieldValues, N extends Path<T>> = {
@@ -18,6 +24,8 @@ type Props<T extends FieldValues, N extends Path<T>> = {
   usdValue?: string;
   bottomValue?: string;
   bottomLabel?: string;
+  rules?: UseControllerProps<T, N>["rules"];
+  errorMessage?: string;
 };
 
 export const Input = <T extends FieldValues, N extends Path<T>>(
@@ -34,48 +42,64 @@ export const Input = <T extends FieldValues, N extends Path<T>>(
     usdValue,
     bottomLabel = "Balance",
     bottomValue,
+    rules,
+    errorMessage,
   } = props;
 
+  const { field, fieldState } = useController({ control, name, rules });
+
+  const error = errorMessage ?? fieldState.error?.message;
+
   return (
-    <div
-      className={twMerge(
-        "flex flex-col rounded-lg bg-mirage px-7 py-2",
-        className
-      )}
-    >
-      {label && <div className="mb-1 text-sm text-bluishGrey">{label}</div>}
+    <>
+      <div
+        className={twMerge(
+          "relative flex flex-col rounded-lg bg-mirage px-7 py-2",
+          error && "inner-border inner-border-darkCoral",
+          className
+        )}
+      >
+        {label && <div className="mb-1 text-sm text-bluishGrey">{label}</div>}
 
-      <div className="flex items-center justify-between gap-x-1.5">
-        <RHFCurrencyInput
-          control={control}
-          name={name}
-          decimals={decimals}
-          placeholder="0"
-        />
-        {slot}
-      </div>
-      <div className="mt-2 flex items-center">
-        {usdValue && (
-          <span className="mr-auto inline-flex text-sm text-bluishGrey">
-            {formatCurrency(usdValue, { prefix: "$", decimalScale: 2 })}
-          </span>
-        )}
+        <div className="flex items-center justify-between gap-x-1.5">
+          <CurrencyInput
+            autoComplete="currency"
+            disabled={field.disabled}
+            onBlur={field.onBlur}
+            name={field.name}
+            value={field.value}
+            ref={field.ref}
+            onChange={field.onChange}
+            className={twJoin(error && "text-darkCoral")}
+            decimals={decimals}
+            placeholder="0"
+          />
+          {slot}
+        </div>
+        <div className="mt-2 flex items-center">
+          {usdValue && (
+            <span className="mr-auto inline-flex text-sm text-bluishGrey">
+              {formatCurrency(usdValue, { prefix: "$", decimalScale: 2 })}
+            </span>
+          )}
 
-        {bottomValue && (
-          <span className="mr-2 inline-flex text-sm text-bluishGrey">
-            {bottomLabel}: {formatCurrency(bottomValue, { decimalScale: 2 })}
-          </span>
-        )}
-        {onMaxClick && (
-          <Button
-            theme="mirage"
-            className="bg-balticSea px-4 py-1 text-sm text-aquaHaze"
-            onClick={onMaxClick}
-          >
-            Max
-          </Button>
-        )}
+          {bottomValue && (
+            <span className="mr-2 inline-flex text-sm text-bluishGrey">
+              {bottomLabel}: {formatCurrency(bottomValue, { decimalScale: 2 })}
+            </span>
+          )}
+          {onMaxClick && (
+            <Button
+              theme="mirage"
+              className="bg-balticSea px-4 py-1 text-sm text-aquaHaze"
+              onClick={onMaxClick}
+            >
+              Max
+            </Button>
+          )}
+        </div>
       </div>
-    </div>
+      {error && <span className="mt-1 text-xs text-darkCoral">{error}</span>}
+    </>
   );
 };

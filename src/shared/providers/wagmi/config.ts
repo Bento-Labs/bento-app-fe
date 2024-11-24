@@ -1,8 +1,8 @@
 import { Chain, createClient, http } from "viem";
-import { mainnet, sepolia } from "viem/chains";
+import { sepolia } from "viem/chains";
 import { createConfig } from "wagmi";
 
-const supportedChains: [Chain, ...Chain[]] = [sepolia, mainnet];
+const supportedChains: [Chain, ...Chain[]] = [sepolia];
 
 export const config = createConfig({
   // storage: createStorage({

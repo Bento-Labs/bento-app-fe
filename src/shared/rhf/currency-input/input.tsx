@@ -1,3 +1,4 @@
+import { CurrencyInputOnChangeValues } from "react-currency-input-field";
 import {
   FieldValues,
   Path,
@@ -10,8 +11,12 @@ import { CurrencyInput, CurrencyInputProps } from "shared/ui/currency-input";
 import { extractControllerProps } from "../utils";
 
 type CustomProps = {
-  onChange?: CurrencyInputProps["onChange"];
-  value?: CurrencyInputProps["value"];
+  onChange?: (
+    value: string,
+    name?: string,
+    values?: CurrencyInputOnChangeValues
+  ) => void;
+  value?: string;
 };
 
 type Props<T extends FieldValues, N extends Path<T>> = Omit<
@@ -40,7 +45,9 @@ export const Input = <T extends FieldValues, N extends Path<T>>(
       disabled={field.disabled}
       name={field.name}
       ref={field.ref}
-      onChange={field.onChange}
+      onChange={(value) => {
+        field.onChange(value || "");
+      }}
     />
   );
 };

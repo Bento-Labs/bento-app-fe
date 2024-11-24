@@ -20,19 +20,17 @@ type Props = {
 export const Option = ({ className, option, isSelected, onClick }: Props) => {
   const { symbol, address, chainId, logoURI, decimals } = option;
 
-  const latestPriceQuery = useLatestPriceQuery(symbol, {
-    select: ({ decimals, data }) => {
-      const price = data[1];
-      return formatUnits(price, decimals);
-    },
-  });
+  const latestPriceQuery = useLatestPriceQuery(symbol);
 
   const query = useBalanceQuery(address, {
     chainId,
     select: (balance) => formatUnits(balance, decimals),
   });
 
-  const usdValue = mul(latestPriceQuery.data, query.data)?.toString();
+  const usdValue = mul(
+    latestPriceQuery.data?.formatted,
+    query.data
+  )?.toString();
 
   return (
     <li
@@ -52,7 +50,9 @@ export const Option = ({ className, option, isSelected, onClick }: Props) => {
         <span className={twJoin("inline-flex font-medium text-white")}>
           {symbol}
         </span>
-        <span className="mt-1 text-xs text-grey">{shortAddress(address)}</span>
+        <span className="mt-1 text-xs text-grey">
+          {shortAddress(address, 6, 5)}
+        </span>
       </div>
       <div className="ml-auto flex flex-col">
         <span className="text-right font-medium text-white">

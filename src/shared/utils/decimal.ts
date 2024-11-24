@@ -1,9 +1,31 @@
 import { Decimal } from "decimal.js";
-export const mul = (
-  a: Decimal.Value | undefined,
-  b: Decimal.Value | undefined
-) => {
-  if (!a || !b) return undefined;
+export const mul = <
+  T extends Decimal.Value | undefined,
+  U extends Decimal.Value | undefined,
+>(
+  a: T,
+  b: U
+): T extends undefined
+  ? undefined
+  : U extends undefined
+    ? undefined
+    : U extends undefined
+      ? undefined
+      : Decimal => {
+  if (!a || !b)
+    return undefined as T extends undefined
+      ? undefined
+      : U extends undefined
+        ? undefined
+        : U extends undefined
+          ? undefined
+          : Decimal;
 
-  return new Decimal(a).mul(b);
+  return new Decimal(a).mul(b) as T extends undefined
+    ? undefined
+    : U extends undefined
+      ? undefined
+      : U extends undefined
+        ? undefined
+        : Decimal;
 };

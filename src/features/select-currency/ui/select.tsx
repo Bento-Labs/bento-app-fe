@@ -1,6 +1,7 @@
 import { useState } from "react";
 
 import { CurrencyLabel } from "entities/currency";
+import { Portal } from "shared/ui/portal";
 
 import { Option } from "../types";
 import { Modal } from "./modal";
@@ -32,15 +33,17 @@ export const Select = (props: Props) => {
       />
 
       {isOpen && (
-        <Modal
-          onClose={() => setIsOpen(false)}
-          onSelect={(currency) => {
-            setIsOpen(false);
-            onChange(currency);
-          }}
-          options={options}
-          selectedSymbol={symbol}
-        />
+        <Portal>
+          <Modal
+            onClose={() => setIsOpen(false)}
+            onSelect={(currency) => {
+              setIsOpen(false);
+              onChange(currency);
+            }}
+            options={options}
+            selectedSymbol={symbol}
+          />
+        </Portal>
       )}
     </>
   );

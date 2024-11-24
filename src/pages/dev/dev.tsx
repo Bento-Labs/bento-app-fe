@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { useChainId } from "wagmi";
+
 import { CurrencyLabel, CurrencyValue } from "entities/currency";
 import { AppKitConnectWalletButton } from "features/connect-wallet";
 import { Button } from "shared/ui/button";
@@ -12,9 +14,11 @@ export const Dev = () => {
   const handleToast = () => {
     notifyError("hello wrold");
   };
+
+  const chainId = useChainId();
   return (
     <div>
-      DEV PAGE
+      DEV PAGE Current ChainId: {chainId}
       <AppKitConnectWalletButton />
       <CurrencyValue symbol="ETH" value="0.12" />
       <CurrencyLabel symbol="ETH" />

@@ -29,6 +29,9 @@ export const chainLinkAggregatorsAddresses: Record<
 
     // ETH / USD
     DAI: "0x694AA1769357215DE4FAC081bf1f309aDC325306",
+
+    // USDE / USD
+    USDe: "0x55ec7c3ed0d7CB5DF4d3d8bfEd2ecaf28b4638fb",
   },
 };
 
@@ -69,32 +72,37 @@ export const collateralsConfig: Record<number, Record<string, Currency>> = {
   },
   [sepolia.id]: {
     USDT: {
-      logoURI:
-        "https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0xdAC17F958D2ee523a2206206994597C13D831ec7/logo.png",
+      logoURI: "/tokens/usdt-logo.svg",
       chainId: 11155111,
       symbol: "USDT",
-      decimals: 6,
-      address: "0xaA8E23Fb1079EA71e0a56F48a2aA51851D8433D0" as Address,
+      decimals: 18,
+      address: "0x5Fd341Ba92C4F6e6B7778Ba303D8B1EBd36A9cA0" as Address,
       name: "USDT (USDT)",
     },
     USDC: {
-      logoURI:
-        "https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48/logo.png",
+      logoURI: "/tokens/usdc-logo.svg",
       chainId: 11155111,
-      decimals: 6,
+      decimals: 18,
       symbol: "USDC",
-      address: "0x94a9D9AC8a22534E3FaCa9F4e7F2E2cf85d5E4C8" as Address,
+      address: "0xC98F51755976811c1D71d895DA2A73b46Dfbc918" as Address,
       name: "USDC (USDC)",
     },
 
     DAI: {
-      logoURI:
-        "https://assets-cdn.trustwallet.com/blockchains/ethereum/assets/0x6B175474E89094C44Da98b954EedeAC495271d0F/logo.png",
+      logoURI: "/tokens/dai-logo.svg",
       chainId: 11155111,
-      decimals: 6,
+      decimals: 18,
       symbol: "DAI",
-      address: "0x68194a729C2450ad26072b3D33ADaCbcef39D574" as Address,
+      address: "0x4F12d4e3FE59Ad54f7e9704B71467eB368b2F498" as Address,
       name: "DAI (DAI)",
+    },
+    USDe: {
+      logoURI: "/tokens/usde-logo.svg",
+      chainId: 11155111,
+      decimals: 18,
+      symbol: "USDe",
+      address: "0x63c9C938be90E0692840E310e917aF1De40e314B" as Address,
+      name: "test USDe",
     },
   },
 };
