@@ -21,17 +21,10 @@ export const chainLinkAggregatorsAddresses: Record<
     TUSD: "0xec746eCF986E2927Abd291a2A1716c940100f8Ba",
   },
   [sepolia.id]: {
-    // BTC / USD
-    USDT: "0x1b44F3514812d835EB1BDB0acB33d3fA3351Ee43",
-
-    // USDC / USD
+    USDT: "0x55ec7c3ed0d7CB5DF4d3d8bfEd2ecaf28b4638fb",
     USDC: "0xA2F78ab2355fe2f984D808B5CeE7FD0A93D5270E",
-
-    // ETH / USD
-    DAI: "0x694AA1769357215DE4FAC081bf1f309aDC325306",
-
-    // USDE / USD
-    USDe: "0x55ec7c3ed0d7CB5DF4d3d8bfEd2ecaf28b4638fb",
+    DAI: "0x14866185B1962B63C3Ea9E03Bc1da838bab34C19",
+    USDe: "0x6f7be09227d98Ce1Df812d5Bc745c0c775507E92",
   },
 };
 
