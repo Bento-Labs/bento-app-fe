@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { useSessionStorage } from "usehooks-ts";
+
 import { Header } from "pages/ui/layout";
 
 import { Mode, TabType } from "./types";
@@ -8,7 +10,7 @@ import { SingleModeForm } from "./ui/single-mode-form/single-mode-form";
 import { TopControls } from "./ui/top-controls";
 
 export const Mint = () => {
-  const [mode, setMode] = useState<Mode>("single");
+  const [mode, setMode] = useSessionStorage<Mode>("bento:mode", "single");
   const [activeTab, setActiveTab] = useState<TabType>("mint");
 
   return (

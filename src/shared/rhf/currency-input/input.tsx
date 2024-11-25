@@ -46,6 +46,8 @@ export const Input = <T extends FieldValues, N extends Path<T>>(
       name={field.name}
       ref={field.ref}
       onChange={(value) => {
+        console.log("value");
+        restProps.onChange?.(value);
         field.onChange(value || "");
       }}
     />

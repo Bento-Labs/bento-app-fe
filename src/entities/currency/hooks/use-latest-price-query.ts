@@ -54,13 +54,13 @@ const fetchLatestPriceQuery = async (
 
 type Params = {
   client: PublicClient | undefined;
-  address: Address;
+  addresses: Record<string, Address>;
   chainId: number;
   account: Address | undefined;
 };
 
 const getLatestPriceQueryKey = (params: Omit<Params, "client">) => {
-  return ["latest-price", params.account, params.address, params.chainId];
+  return ["latest-price", params.account, params.addresses, params.chainId];
 };
 
 const withFormatted = ({ decimals, data }: FetchLatestPriceResult) => {
@@ -75,7 +75,8 @@ const withFormatted = ({ decimals, data }: FetchLatestPriceResult) => {
   };
 };
 
-type Result = ReturnType<typeof withFormatted>;
+type WithFormatted = ReturnType<typeof withFormatted>;
+export type Result = Record<string, WithFormatted>;
 
 const getQueryOptions = <TData = Result>(
   params: Params,
@@ -87,9 +88,22 @@ const getQueryOptions = <TData = Result>(
     queryFn: async () => {
       invariant(client, "useLatestPriceQuery. client is undefined");
       invariant(account, "useLatestPriceQuery. account is undefined");
-      const data = await fetchLatestPriceQuery({ ...params, client, account });
 
-      return withFormatted(data);
+      const promises = Object.entries(params.addresses).map(([_, address]) => {
+        return fetchLatestPriceQuery({ ...params, address, client, account });
+      });
+
+      const symbols = Object.keys(params.addresses);
+
+      const response = await Promise.all(promises);
+
+      return symbols.reduce(
+        (acc, symbol, index) => {
+          acc[symbol] = withFormatted(response[index]);
+          return acc;
+        },
+        {} as Record<string, WithFormatted>
+      );
     },
     staleTime: 1000 * 5,
     enabled: Boolean(account && client),
@@ -97,18 +111,17 @@ const getQueryOptions = <TData = Result>(
   });
 };
 
-export const useLatestPriceQuery = <TData = Result>(
-  symbol: string,
+export const useLatestPricesQuery = <TData = Result>(
   options?: QueryOptions<Result, unknown, TData>
 ) => {
   const { address: accountAddress } = useAccount();
   const chainId = useChainId();
   const pc = usePublicClient({ chainId });
 
-  return useQuery(
+  const query = useQuery(
     getQueryOptions<TData>(
       {
-        address: chainLinkAggregatorConfig[chainId][symbol],
+        addresses: chainLinkAggregatorConfig[chainId],
         account: accountAddress,
         chainId,
         client: pc,
@@ -116,4 +129,6 @@ export const useLatestPriceQuery = <TData = Result>(
       options
     )
   );
+
+  return query;
 };

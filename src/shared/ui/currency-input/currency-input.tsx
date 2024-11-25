@@ -58,6 +58,7 @@ export const Component = forwardRef<HTMLInputElement, Props>((props, ref) => {
       )}
       decimalSeparator="."
       decimalsLimit={decimals}
+      formatValueOnBlur={false}
       disableAbbreviations
       disableGroupSeparators
       onValueChange={(value, ...args) => {

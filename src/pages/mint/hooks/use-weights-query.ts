@@ -6,6 +6,13 @@ import { useChainId, usePublicClient } from "wagmi";
 import { bentoVaultCoreConfig } from "shared/config";
 import { bentoVaultCoreABI } from "shared/config/abi";
 
+export type Weights = readonly [
+  usdtWeight: number,
+  usdcWeight: number,
+  daiWeight: number,
+  usdeWeight: number,
+];
+
 export const useWeightsQuery = () => {
   const chainId = useChainId();
   const pc = usePublicClient();
@@ -23,12 +30,9 @@ export const useWeightsQuery = () => {
 
       console.log(weights);
 
-      return [1, 2, 3, 4] as readonly [
-        usdtWeight: number,
-        usdcWeight: number,
-        daiWeight: number,
-        usdeWeight: number,
-      ];
+      return weights as Weights;
+
+      // return [1, 2, 3, 4] as Weights;
     },
 
     enabled: Boolean(pc),

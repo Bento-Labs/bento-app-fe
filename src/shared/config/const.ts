@@ -100,7 +100,7 @@ export const collateralsConfig: Record<number, Record<string, Currency>> = {
   },
 };
 
-export const busdConfig: Record<number, Currency> = {
+export const bentoUSDConfig: Record<number, Currency> = {
   [mainnet.id]: {
     logoURI: "/bento-token.png",
     chainId: 1,
@@ -113,12 +113,12 @@ export const busdConfig: Record<number, Currency> = {
     chainId: 11155111,
     address: "0x6ae08082387AaBcA74830054B1f3ba8a0571F9c6",
     name: "BentoUSD",
-    symbol: "BUSD",
+    symbol: "BentoUSD",
     decimals: 18,
     logoURI: "/bento-token.png",
   },
 };
 
 export const bentoVaultCoreConfig: Record<number, Address> = {
-  [sepolia.id]: "0x6ae08082387AaBcA74830054B1f3ba8a0571F9c6",
+  [sepolia.id]: "0x8FDE145B1289a99C6B15f363309d3cc9276c0b16",
 };

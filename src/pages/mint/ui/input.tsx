@@ -14,6 +14,7 @@ import { CurrencyInput } from "shared/ui/currency-input";
 import { formatCurrency } from "shared/web3/utils";
 
 type Props<T extends FieldValues, N extends Path<T>> = {
+  disabled?: boolean;
   control: Control<T>;
   name: N;
   label: ReactNode;
@@ -32,6 +33,7 @@ export const Input = <T extends FieldValues, N extends Path<T>>(
   props: Props<T, N>
 ) => {
   const {
+    disabled,
     control,
     name,
     className,
@@ -46,7 +48,12 @@ export const Input = <T extends FieldValues, N extends Path<T>>(
     errorMessage,
   } = props;
 
-  const { field, fieldState } = useController({ control, name, rules });
+  const { field, fieldState } = useController({
+    disabled,
+    control,
+    name,
+    rules,
+  });
 
   const error = errorMessage ?? fieldState.error?.message;
 
@@ -77,11 +84,11 @@ export const Input = <T extends FieldValues, N extends Path<T>>(
           {slot}
         </div>
         <div className="mt-2 flex items-center">
-          {usdValue && (
-            <span className="mr-auto inline-flex text-sm text-bluishGrey">
-              {formatCurrency(usdValue, { prefix: "$", decimalScale: 2 })}
-            </span>
-          )}
+          <span className="mr-auto inline-flex text-sm text-bluishGrey">
+            {usdValue
+              ? formatCurrency(usdValue, { prefix: "$", decimalScale: 2 })
+              : " "}
+          </span>
 
           {bottomValue && (
             <span className="mr-2 inline-flex text-sm text-bluishGrey">

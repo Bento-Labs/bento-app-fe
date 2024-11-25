@@ -1,7 +1,7 @@
 import { twJoin, twMerge } from "tailwind-merge";
 import { formatUnits } from "viem";
 
-import { useBalanceQuery, useLatestPriceQuery } from "entities/currency";
+import { useBalanceQuery, useLatestPricesQuery } from "entities/currency";
 import { Img } from "shared/ui/img";
 import { Spinner } from "shared/ui/spinner";
 import { mul } from "shared/utils";
@@ -20,17 +20,16 @@ type Props = {
 export const Option = ({ className, option, isSelected, onClick }: Props) => {
   const { symbol, address, chainId, logoURI, decimals } = option;
 
-  const latestPriceQuery = useLatestPriceQuery(symbol);
+  const latestPricesQuery = useLatestPricesQuery();
+
+  const latestPrice = latestPricesQuery.data?.[symbol];
 
   const query = useBalanceQuery(address, {
     chainId,
     select: (balance) => formatUnits(balance, decimals),
   });
 
-  const usdValue = mul(
-    latestPriceQuery.data?.formatted,
-    query.data
-  )?.toString();
+  const usdValue = mul(latestPrice?.formatted, query.data)?.toString();
 
   return (
     <li
@@ -60,7 +59,7 @@ export const Option = ({ className, option, isSelected, onClick }: Props) => {
         </span>
         {usdValue && (
           <span className="mt-1 text-right text-xs text-grey">
-            {(latestPriceQuery.isPending || query.isPending) && !usdValue && (
+            {(latestPricesQuery.isPending || query.isPending) && !usdValue && (
               <Spinner className="size-2" />
             )}
 

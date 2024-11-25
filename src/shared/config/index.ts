@@ -1,7 +1,7 @@
 export {
   chainLinkAggregatorConfig,
   bentoVaultCoreConfig,
-  busdConfig,
+  bentoUSDConfig,
 } from "./const";
 
 export { type Currency } from "./const";

@@ -13,11 +13,11 @@ import { useChainId } from "wagmi";
 import {
   CurrencyLabel,
   useBalanceQuery,
-  useLatestPriceQuery,
+  useLatestPricesQuery,
 } from "entities/currency";
 import { useCurrenciesOptions } from "pages/mint/hooks/use-currencies-options";
 import { checkBalance } from "pages/mint/utils/validations";
-import { busdConfig } from "shared/config";
+import { bentoUSDConfig } from "shared/config";
 import { mul } from "shared/utils";
 
 import { SingleModeFormType } from "../../types";
@@ -27,7 +27,7 @@ import { SelectCurrency } from "./select-currency";
 
 export const SingleModeForm = () => {
   const chainId = useChainId();
-  const bento = busdConfig[chainId];
+  const bento = bentoUSDConfig[chainId];
   const options = useCurrenciesOptions();
 
   const form = useForm<SingleModeFormType>({
@@ -55,7 +55,8 @@ export const SingleModeForm = () => {
     },
   });
 
-  const latestPriceQuery = useLatestPriceQuery(currency.symbol);
+  const latestPricesQuery = useLatestPricesQuery();
+  const latestPrice = latestPricesQuery.data?.[currency.symbol];
 
   const handleSuccess: SubmitHandler<SingleModeFormType> = () => {
     //
@@ -63,8 +64,7 @@ export const SingleModeForm = () => {
 
   const handleError: SubmitErrorHandler<SingleModeFormType> = () => {};
 
-  const usdValue =
-    mul(latestPriceQuery.data?.formatted, payValue)?.toString() ?? "0";
+  const usdValue = mul(latestPrice?.formatted, payValue)?.toString() ?? "0";
 
   return (
     <FormProvider {...form}>
