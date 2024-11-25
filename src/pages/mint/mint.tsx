@@ -10,7 +10,7 @@ import { SingleModeForm } from "./ui/single-mode-form/single-mode-form";
 import { TopControls } from "./ui/top-controls";
 
 export const Mint = () => {
-  const [mode, setMode] = useSessionStorage<Mode>("bento:mode", "single");
+  const [mode, setMode] = useSessionStorage<Mode>("bento:mode", "basket");
   const [activeTab, setActiveTab] = useState<TabType>("mint");
 
   return (
