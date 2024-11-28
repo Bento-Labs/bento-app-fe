@@ -494,15 +494,3 @@ export const abi = [
     type: "function",
   },
 ] as const;
-// const addr = "0x47Fb2585D2C56Fe188D0E6ec628a38b74fCeeeDf";
-// const feedRegistry = new web3.eth.Contract(feedRegistryInterfaceABI, addr);
-// const LINK = "0x514910771AF9Ca656af840dff83E8264EcF986CA";
-// const USD = "0x0000000000000000000000000000000000000348";
-
-// feedRegistry.methods
-//   .latestRoundData(LINK, USD)
-//   .call()
-//   .then((roundData) => {
-//     // Do something with roundData
-//     console.log("Latest Round Data", roundData);
-//   });

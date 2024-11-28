@@ -11,9 +11,9 @@ export type SingleModeFormType = {
 };
 
 export type BasketModeFormType = {
-  receiveValue: string | undefined;
+  receiveValue: string;
   collaterals: {
     currency: Currency;
-    value: string | undefined;
+    value: string;
   }[];
 };

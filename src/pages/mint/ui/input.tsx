@@ -20,13 +20,14 @@ type Props<T extends FieldValues, N extends Path<T>> = {
   label: ReactNode;
   className?: string;
   decimals: number;
-  onMaxClick?: () => void;
   slot?: ReactNode;
   usdValue?: string;
   bottomValue?: string;
   bottomLabel?: string;
   rules?: UseControllerProps<T, N>["rules"];
   errorMessage?: string;
+  onMaxClick?: () => void;
+  onChange?: (value: string) => void;
 };
 
 export const Input = <T extends FieldValues, N extends Path<T>>(
@@ -39,13 +40,14 @@ export const Input = <T extends FieldValues, N extends Path<T>>(
     className,
     label,
     decimals,
-    onMaxClick,
     slot,
     usdValue,
     bottomLabel = "Balance",
     bottomValue,
     rules,
     errorMessage,
+    onChange,
+    onMaxClick,
   } = props;
 
   const { field, fieldState } = useController({
@@ -70,13 +72,16 @@ export const Input = <T extends FieldValues, N extends Path<T>>(
 
         <div className="flex items-center justify-between gap-x-1.5">
           <CurrencyInput
-            autoComplete="currency"
+            autoComplete="none"
             disabled={field.disabled}
             onBlur={field.onBlur}
             name={field.name}
             value={field.value}
             ref={field.ref}
-            onChange={field.onChange}
+            onChange={(value) => {
+              field.onChange(value);
+              onChange?.(value);
+            }}
             className={twJoin(error && "text-darkCoral")}
             decimals={decimals}
             placeholder="0"

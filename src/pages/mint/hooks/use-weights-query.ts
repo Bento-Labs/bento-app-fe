@@ -28,11 +28,9 @@ export const useWeightsQuery = () => {
 
       const weights = await contract.read.getWeights();
 
-      console.log(weights);
-
       return weights as Weights;
 
-      // return [1, 2, 3, 4] as Weights;
+      //   return [25, 37.5, 25, 30] as Weights;
     },
 
     enabled: Boolean(pc),

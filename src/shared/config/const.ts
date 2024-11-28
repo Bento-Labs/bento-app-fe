@@ -112,8 +112,8 @@ export const bentoUSDConfig: Record<number, Currency> = {
   [sepolia.id]: {
     chainId: 11155111,
     address: "0x6ae08082387AaBcA74830054B1f3ba8a0571F9c6",
-    name: "BentoUSD",
-    symbol: "BentoUSD",
+    name: "bentoUSD",
+    symbol: "bentoUSD",
     decimals: 18,
     logoURI: "/bento-token.png",
   },

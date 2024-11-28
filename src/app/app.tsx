@@ -12,10 +12,13 @@ import { ErrorComponent } from "pages/error";
 import { Mint } from "pages/mint";
 import { RqProvider } from "shared/providers/rq";
 import { WagmiProvider } from "shared/providers/wagmi";
+import { setupDecimal } from "shared/utils";
 
 import "react-toastify/dist/ReactToastify.css";
 
 import "./index.css";
+
+setupDecimal();
 
 const router = createBrowserRouter(
   createRoutesFromElements(

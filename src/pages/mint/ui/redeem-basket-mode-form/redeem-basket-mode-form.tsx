@@ -23,9 +23,8 @@ import { mul } from "shared/utils";
 import { SingleModeFormType } from "../../types";
 import { Input } from "../input";
 import { SubmitButton } from "../submit-button";
-import { SelectCurrency } from "./select-currency";
 
-export const SingleModeForm = () => {
+export const RedeemBasketModeForm = () => {
   const chainId = useChainId();
   const bento = bentoUSDConfig[chainId];
   const options = useCurrenciesOptions();
@@ -70,6 +69,15 @@ export const SingleModeForm = () => {
     <FormProvider {...form}>
       <form onSubmit={handleSubmit(handleSuccess, handleError)}>
         <Input
+          control={control}
+          name="receiveValue"
+          label="You Give"
+          className="mt-2"
+          slot={<CurrencyLabel symbol={bento.symbol} icon={bento.logoURI} />}
+          usdValue="0"
+          decimals={bento.decimals}
+        />
+        <Input
           rules={{
             validate: (data) => {
               const balanceMsg = checkBalance(
@@ -90,9 +98,9 @@ export const SingleModeForm = () => {
           }}
           control={control}
           name="payValue"
-          label="You Give"
-          className="mt-2"
-          slot={<SelectCurrency control={control} />}
+          label="You Receive"
+          className="mt-3"
+          // slot={<SelectCurrency control={control} />}
           usdValue={usdValue}
           bottomValue={balanceQuery.data?.formattedBalance}
           decimals={currency.decimals}
@@ -100,19 +108,6 @@ export const SingleModeForm = () => {
             setValue("payValue", balanceQuery.data?.formattedBalance || "");
           }}
         />
-        <Input
-          control={control}
-          name="receiveValue"
-          label="You Receive"
-          className="mt-3"
-          slot={<CurrencyLabel symbol={bento.symbol} icon={bento.logoURI} />}
-          usdValue="0"
-          decimals={bento.decimals}
-        />
-
-        {/* <SelectNetwork className="mt-5" />
-
-      <BentoPlusToggle className="mt-4" checked={false} onChange={() => {}} /> */}
 
         <SubmitButton
           disabled={!payValue || !isValid}

@@ -1,5 +1,9 @@
 import { Decimal } from "decimal.js";
 
+export const setupDecimal = () => {
+  Decimal.set({ precision: 19, rounding: Decimal.ROUND_HALF_UP });
+};
+
 type Result<
   T extends Decimal.Value | undefined,
   U extends Decimal.Value | undefined,
@@ -10,7 +14,6 @@ type Result<
     : U extends undefined
       ? undefined
       : Decimal;
-
 export const mul = <
   T extends Decimal.Value | undefined,
   U extends Decimal.Value | undefined,
@@ -32,4 +35,8 @@ export const div = <
 ) => {
   if (!numenator || !denumenator) return undefined as Result<T, U>;
   return new Decimal(numenator).div(denumenator) as Result<T, U>;
+};
+
+export const pow = (a: Decimal.Value, b: Decimal.Value) => {
+  return new Decimal(a).pow(b);
 };

@@ -3,12 +3,15 @@ import { ComponentProps, PropsWithChildren } from "react";
 import { useAccount } from "wagmi";
 
 import { AppKitConnectWalletButton } from "features/connect-wallet";
+import { Currency } from "shared/config";
 import { Button } from "shared/ui/button";
 
-type Props = ComponentProps<typeof Button>;
+type Props = ComponentProps<typeof Button> & {
+  currencies: Currency[];
+};
 
 export const SubmitButton = (props: PropsWithChildren<Props>) => {
-  const { children, className, ...rest } = props;
+  const { children, className, currencies, ...rest } = props;
   const { isConnected, chain } = useAccount();
 
   if (!isConnected || !chain) {

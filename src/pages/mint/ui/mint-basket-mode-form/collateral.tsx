@@ -1,16 +1,19 @@
 import { useFormContext } from "react-hook-form";
 
-import Decimal from "decimal.js";
 import { twMerge } from "tailwind-merge";
-import { formatUnits } from "viem";
+import { formatUnits, parseUnits } from "viem";
 import { useAccount, useChainId } from "wagmi";
 
-import { useBalanceQuery, UseLatestPricesQueryResult } from "entities/currency";
+import {
+  useAllowancesQueries,
+  useBalanceQuery,
+  UseLatestPricesQueryResult,
+} from "entities/currency";
 import { Weights } from "pages/mint/hooks/use-weights-query";
-import { bentoUSDConfig, Currency } from "shared/config";
-import { div, mul } from "shared/utils";
+import { bentoUSDConfig, bentoVaultCoreConfig, Currency } from "shared/config";
 
 import { BasketModeFormType } from "../../types";
+import { calcReceiveValue } from "../../utils/calculations";
 import { checkBalance } from "../../utils/validations";
 import { CollateralInput } from "../collateral-input";
 
@@ -27,6 +30,13 @@ export const Collateral = (props: Props) => {
   const { currency, index, weights, prices } = props;
   const chainId = useChainId();
   const bentoUSD = bentoUSDConfig[chainId];
+
+  const allowancesQuery = useAllowancesQueries({
+    currencyAddresses: getValues().collaterals.map((c) => c.currency.address),
+    contractAddress: bentoVaultCoreConfig[chainId],
+  });
+
+  const currentAllowance = allowancesQuery.data?.[index].result;
 
   const balanceQuery = useBalanceQuery(currency.address, {
     select: (balance) => {
@@ -49,40 +59,38 @@ export const Collateral = (props: Props) => {
       return;
     }
 
-    const currentCollateralWeight = weights[index];
-
-    const values = weights.map((w, index) => {
-      const collateral = collaterals[index];
-      const usdPrice = prices[collateral.currency.symbol].formatted;
-      const normalizedWeight = div(w, currentCollateralWeight);
-      const collateralValue = div(value, normalizedWeight)
-        .toDecimalPlaces(18, 1)
-        .toSignificantDigits();
-      const usdValue = mul(collateralValue, usdPrice);
-
-      setValue(`collaterals.${index}.value`, collateralValue.toString(), {
-        shouldDirty: true,
-        shouldTouch: true,
-        shouldValidate: true,
-      });
-
-      return { usdValue, collateralValue };
+    const { collateralsValues, receiveValue } = calcReceiveValue({
+      collaterals: collaterals.map((c) => c.currency),
+      currentValue: value,
+      inputCurrency: collaterals[index].currency,
+      prices,
+      weights,
     });
-
-    const usdValuesSum = values.reduce((acc, item) => {
-      acc = acc.plus(item.usdValue);
-      return acc;
-    }, new Decimal(0));
-
-    const receiveValue = usdValuesSum;
 
     setValue(
       "receiveValue",
       receiveValue
-        .toDecimalPlaces(bentoUSD.decimals, 1)
-        .toSignificantDigits()
+        .toDecimalPlaces(bentoUSD.decimals + 1)
+        .toSignificantDigits(bentoUSD.decimals)
         .toString()
     );
+
+    collateralsValues.forEach(({ collateralValue }, index) => {
+      const { currency } = collaterals[index];
+
+      setValue(
+        `collaterals.${index}.value`,
+        collateralValue
+          .toDecimalPlaces(currency.decimals)
+          .toSignificantDigits()
+          .toString(),
+        {
+          shouldDirty: true,
+          shouldTouch: true,
+          shouldValidate: true,
+        }
+      );
+    });
   };
 
   return (
@@ -90,6 +98,13 @@ export const Collateral = (props: Props) => {
       disabled={!isConnected}
       rules={{
         validate: (value) => {
+          if (
+            typeof currentAllowance !== "undefined" &&
+            parseUnits(value, currency.decimals) > BigInt(currentAllowance)
+          ) {
+            return `Approve ${currency.symbol} spending`;
+          }
+
           const balanceMsg = checkBalance(
             value,
             balanceQuery.data?.balance,

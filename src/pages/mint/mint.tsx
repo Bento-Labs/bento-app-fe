@@ -5,8 +5,9 @@ import { useSessionStorage } from "usehooks-ts";
 import { Header } from "pages/ui/layout";
 
 import { Mode, TabType } from "./types";
-import { BasketModeForm } from "./ui/basket-mode-form/basket-mode-form";
-import { SingleModeForm } from "./ui/single-mode-form/single-mode-form";
+import { MintBasketModeForm } from "./ui/mint-basket-mode-form/mint-basket-mode-form";
+import { MintSingleModeForm } from "./ui/mint-single-mode-form/mint-single-mode-form";
+import { RedeemBasketModeForm } from "./ui/redeem-basket-mode-form/redeem-basket-mode-form";
 import { TopControls } from "./ui/top-controls";
 
 export const Mint = () => {
@@ -28,8 +29,11 @@ export const Mint = () => {
           onSettingsClick={() => {}}
           onModeChange={setMode}
         />
-        {mode === "single" && <SingleModeForm />}
-        {mode === "basket" && <BasketModeForm />}
+        {activeTab === "mint" && mode === "single" && <MintSingleModeForm />}
+        {activeTab === "mint" && mode === "basket" && <MintBasketModeForm />}
+        {activeTab === "redeem" && mode === "basket" && (
+          <RedeemBasketModeForm />
+        )}
       </div>
     </>
   );

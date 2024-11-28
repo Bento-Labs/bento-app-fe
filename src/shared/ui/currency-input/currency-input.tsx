@@ -65,7 +65,7 @@ export const Component = forwardRef<HTMLInputElement, Props>((props, ref) => {
         const val = value ?? "";
         onChange(val, ...args);
       }}
-      pattern="\d*"
+      // pattern="\d*"
       placeholder={placeholder}
       transformRawValue={(str) => (str === "-" ? "" : str)}
     />

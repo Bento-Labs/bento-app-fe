@@ -3,4 +3,4 @@ export { pluralize } from "./pluralize";
 export { readFileAsJSON } from "./read-file-as-json";
 export { sleep } from "./sleep";
 
-export { mul, div } from "./decimal";
+export { mul, div, setupDecimal, pow } from "./decimal";
