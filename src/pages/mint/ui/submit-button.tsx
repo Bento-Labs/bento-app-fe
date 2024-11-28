@@ -3,12 +3,9 @@ import { ComponentProps, PropsWithChildren } from "react";
 import { useAccount } from "wagmi";
 
 import { AppKitConnectWalletButton } from "features/connect-wallet";
-import { Currency } from "shared/config";
 import { Button } from "shared/ui/button";
 
-type Props = ComponentProps<typeof Button> & {
-  currencies: Currency[];
-};
+type Props = ComponentProps<typeof Button>;
 
 export const SubmitButton = (props: PropsWithChildren<Props>) => {
   const { children, className, currencies, ...rest } = props;
