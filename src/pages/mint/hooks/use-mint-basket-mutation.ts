@@ -43,10 +43,6 @@ export const useMintBasketMutation = () => {
       ]);
 
       const hash = await contract.write.mintBasket(args, options);
-      // const hash = await contract.write.mintBasket([
-      //   amount,
-      //   BigInt(mul(amount.toString(), 0.99).toString()),
-      // ]);
 
       const receipt = await waitForTransactionReceipt(wc, { hash });
       return receipt;

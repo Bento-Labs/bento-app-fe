@@ -22,7 +22,6 @@ export const SubmitButton = (props: PropsWithChildren<Props>) => {
   const { isConnected, chain } = useAccount();
   const chainId = useChainId();
   const { trigger } = useFormContext<MintBasketModeFormType>();
-  // const { formState } = useFormContext<MintBasketModeFormType>();
 
   const collaterals = useWatch<MintBasketModeFormType, "collaterals">({
     name: "collaterals",
@@ -55,13 +54,10 @@ export const SubmitButton = (props: PropsWithChildren<Props>) => {
     );
 
   const handleApprove = () => {
-    const { currency, value } = needApproves[0];
-
-    const amount = parseUnits(value, currency.decimals);
+    const { currency } = needApproves[0];
 
     approveMutation.mutate(
       {
-        amount,
         contractAddress: bentoVaultCoreConfig[chainId],
         currencyAddress: currency.address,
       },

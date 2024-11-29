@@ -7,7 +7,6 @@ import { useWalletClient } from "wagmi";
 type Params = {
   currencyAddress: Address;
   contractAddress: Address;
-  amount: bigint;
 };
 
 export const useERC20ApproveMutation = () => {
@@ -16,16 +15,18 @@ export const useERC20ApproveMutation = () => {
     mutationFn: async (params: Params) => {
       invariant(wc, "useERC20ApproveMutation. wc is undefined");
 
-      const { contractAddress, currencyAddress, amount } = params;
+      const { contractAddress, currencyAddress } = params;
       const contract = getContract({
         abi: erc20Abi,
         address: currencyAddress,
         client: wc,
       });
 
+      const totalSupply = await contract.read.totalSupply();
+
       const {
         request: { args, ...options },
-      } = await contract.simulate.approve([contractAddress, amount]);
+      } = await contract.simulate.approve([contractAddress, totalSupply]);
 
       const hash = await contract.write.approve(args, options);
 

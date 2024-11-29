@@ -1,6 +1,12 @@
 import { queryOptions, useQuery } from "@tanstack/react-query";
 import invariant from "tiny-invariant";
-import { Address, formatUnits, getContract, PublicClient } from "viem";
+import {
+  Address,
+  formatUnits,
+  getContract,
+  parseUnits,
+  PublicClient,
+} from "viem";
 import { useAccount, useChainId, usePublicClient } from "wagmi";
 
 import { chainLinkAggregatorConfig } from "shared/config";
@@ -64,7 +70,8 @@ const getLatestPriceQueryKey = (params: Omit<Params, "client">) => {
 };
 
 const withFormatted = ({ decimals, data }: FetchLatestPriceResult) => {
-  const price = data[1];
+  const oneValue = parseUnits("1", decimals);
+  const price = data[1] > oneValue ? oneValue : data[1];
   const formatted = formatUnits(price, decimals);
 
   return {
@@ -97,13 +104,15 @@ const getQueryOptions = <TData = Result>(
 
       const response = await Promise.all(promises);
 
-      return symbols.reduce(
+      const result = symbols.reduce(
         (acc, symbol, index) => {
           acc[symbol] = withFormatted(response[index]);
           return acc;
         },
         {} as Record<string, WithFormatted>
       );
+
+      return result;
     },
     staleTime: 1000 * 5,
     enabled: Boolean(account && client),
