@@ -6,15 +6,15 @@ import {
 } from "features/select-currency";
 
 import { useCurrenciesOptions } from "../../hooks/use-currencies-options";
-import { MintSingleModeFormType } from "../../types";
+import { RedeemSingleModeFormType } from "../../types";
 
 type Props = {
-  control: Control<MintSingleModeFormType>;
+  control: Control<RedeemSingleModeFormType>;
   onChange?: (option: Option) => void;
 };
 
 export const SelectCurrency = ({ control }: Props) => {
-  const { reset } = useFormContext<MintSingleModeFormType>();
+  const { reset } = useFormContext<RedeemSingleModeFormType>();
   const options = useCurrenciesOptions();
 
   const currency = useWatch({ control, name: "currency" });

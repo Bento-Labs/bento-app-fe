@@ -9,22 +9,22 @@ import {
   useERC20ApproveMutation,
 } from "entities/currency";
 import { AppKitConnectWalletButton } from "features/connect-wallet";
-import { BasketModeFormType } from "pages/mint/types";
+import { MintBasketModeFormType } from "pages/mint/types";
 import { bentoVaultCoreConfig } from "shared/config";
 import { Button } from "shared/ui/button";
 
 type Props = ComponentProps<typeof Button> & {
-  control: Control<BasketModeFormType>;
+  control: Control<MintBasketModeFormType>;
 };
 
 export const SubmitButton = (props: PropsWithChildren<Props>) => {
   const { children, className, currencies, control, ...rest } = props;
   const { isConnected, chain } = useAccount();
   const chainId = useChainId();
-  const { trigger } = useFormContext<BasketModeFormType>();
-  // const { formState } = useFormContext<BasketModeFormType>();
+  const { trigger } = useFormContext<MintBasketModeFormType>();
+  // const { formState } = useFormContext<MintBasketModeFormType>();
 
-  const collaterals = useWatch<BasketModeFormType, "collaterals">({
+  const collaterals = useWatch<MintBasketModeFormType, "collaterals">({
     name: "collaterals",
     control,
   });
@@ -48,7 +48,9 @@ export const SubmitButton = (props: PropsWithChildren<Props>) => {
       }
     })
     .filter(
-      (collateral): collateral is BasketModeFormType["collaterals"][number] =>
+      (
+        collateral
+      ): collateral is MintBasketModeFormType["collaterals"][number] =>
         Boolean(collateral)
     );
 

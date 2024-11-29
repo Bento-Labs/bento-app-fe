@@ -12,7 +12,7 @@ import { useAccount, useChainId } from "wagmi";
 import { CurrencyLabel, useLatestPricesQuery } from "entities/currency";
 import { useCurrenciesOptions } from "pages/mint/hooks/use-currencies-options";
 import { useMintBasketMutation } from "pages/mint/hooks/use-mint-basket-mutation";
-import { BasketModeFormType } from "pages/mint/types";
+import { MintBasketModeFormType } from "pages/mint/types";
 import { calcCollateralsValues } from "pages/mint/utils/calculations";
 // import { calcCollateralValue } from "pages/mint/utils/calculations";
 import { bentoUSDConfig } from "shared/config";
@@ -32,7 +32,7 @@ export const MintBasketModeForm = () => {
 
   const latestPricesQuery = useLatestPricesQuery();
 
-  const collaterals: BasketModeFormType["collaterals"] = useMemo(() => {
+  const collaterals: MintBasketModeFormType["collaterals"] = useMemo(() => {
     return options.map((op) => {
       return {
         currency: op,
@@ -41,7 +41,7 @@ export const MintBasketModeForm = () => {
     });
   }, [options]);
 
-  const form = useForm<BasketModeFormType>({
+  const form = useForm<MintBasketModeFormType>({
     values: { receiveValue: "", collaterals },
     mode: "onChange",
   });
@@ -55,11 +55,11 @@ export const MintBasketModeForm = () => {
 
   const mintBasketMutation = useMintBasketMutation();
 
-  const handleSuccess: SubmitHandler<BasketModeFormType> = (data) => {
+  const handleSuccess: SubmitHandler<MintBasketModeFormType> = (data) => {
     mintBasketMutation.mutate({ amount: data.receiveValue, slippage: "0.1" });
   };
 
-  const handleError: SubmitErrorHandler<BasketModeFormType> = () => {};
+  const handleError: SubmitErrorHandler<MintBasketModeFormType> = () => {};
 
   const handleChangeReceiveValue = (value: string) => {
     if (!weightsQuery.data || !latestPricesQuery.data) return;

@@ -20,7 +20,7 @@ import { checkBalance } from "pages/mint/utils/validations";
 import { bentoUSDConfig } from "shared/config";
 import { mul } from "shared/utils";
 
-import { SingleModeFormType } from "../../types";
+import { MintSingleModeFormType } from "../../types";
 import { Input } from "../input";
 import { SubmitButton } from "../submit-button";
 import { SelectCurrency } from "./select-currency";
@@ -30,7 +30,7 @@ export const MintSingleModeForm = () => {
   const bento = bentoUSDConfig[chainId];
   const options = useCurrenciesOptions();
 
-  const form = useForm<SingleModeFormType>({
+  const form = useForm<MintSingleModeFormType>({
     values: {
       currency: options[0],
       payValue: "",
@@ -58,11 +58,11 @@ export const MintSingleModeForm = () => {
   const latestPricesQuery = useLatestPricesQuery();
   const latestPrice = latestPricesQuery.data?.[currency.symbol];
 
-  const handleSuccess: SubmitHandler<SingleModeFormType> = () => {
+  const handleSuccess: SubmitHandler<MintSingleModeFormType> = () => {
     //
   };
 
-  const handleError: SubmitErrorHandler<SingleModeFormType> = () => {};
+  const handleError: SubmitErrorHandler<MintSingleModeFormType> = () => {};
 
   const usdValue = mul(latestPrice?.formatted, payValue)?.toString() ?? "0";
 

@@ -12,7 +12,7 @@ import {
 import { Weights } from "pages/mint/hooks/use-weights-query";
 import { bentoUSDConfig, bentoVaultCoreConfig, Currency } from "shared/config";
 
-import { BasketModeFormType } from "../../types";
+import { MintBasketModeFormType } from "../../types";
 import { calcReceiveValue } from "../../utils/calculations";
 import { checkBalance } from "../../utils/validations";
 import { CollateralInput } from "../collateral-input";
@@ -26,7 +26,8 @@ type Props = {
 
 export const Collateral = (props: Props) => {
   const { isConnected } = useAccount();
-  const { control, setValue, getValues } = useFormContext<BasketModeFormType>();
+  const { control, setValue, getValues } =
+    useFormContext<MintBasketModeFormType>();
   const { currency, index, weights, prices } = props;
   const chainId = useChainId();
   const bentoUSD = bentoUSDConfig[chainId];

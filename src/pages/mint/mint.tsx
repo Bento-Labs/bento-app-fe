@@ -7,7 +7,8 @@ import { Header } from "pages/ui/layout";
 import { Mode, TabType } from "./types";
 import { MintBasketModeForm } from "./ui/mint-basket-mode-form/mint-basket-mode-form";
 import { MintSingleModeForm } from "./ui/mint-single-mode-form/mint-single-mode-form";
-import { RedeemBasketModeForm } from "./ui/redeem-basket-mode-form/redeem-basket-mode-form";
+import { RedeemSingleModeForm } from "./ui/redeem-signle-mode-form/redeem-single-mode-form";
+// import { RedeemBasketModeForm } from "./ui/redeem-basket-mode-form/redeem-basket-mode-form";
 import { TopControls } from "./ui/top-controls";
 
 export const Mint = () => {
@@ -31,9 +32,12 @@ export const Mint = () => {
         />
         {activeTab === "mint" && mode === "single" && <MintSingleModeForm />}
         {activeTab === "mint" && mode === "basket" && <MintBasketModeForm />}
-        {activeTab === "redeem" && mode === "basket" && (
-          <RedeemBasketModeForm />
+        {activeTab === "redeem" && mode === "single" && (
+          <RedeemSingleModeForm />
         )}
+        {/* {activeTab === "redeem" && mode === "basket" && (
+          <RedeemBasketModeForm />
+        )} */}
       </div>
     </>
   );

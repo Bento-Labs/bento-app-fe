@@ -6,6 +6,7 @@ import {
   UseControllerProps,
 } from "react-hook-form";
 
+import Decimal from "decimal.js";
 import { twMerge } from "tailwind-merge";
 import { Address, formatUnits } from "viem";
 
@@ -43,7 +44,11 @@ export const CollateralInput = <T extends FieldValues, Name extends Path<T>>(
   } = props;
 
   const balanceQuery = useBalanceQuery(address, {
-    select: (balance) => formatUnits(balance, decimals),
+    select: (balance) =>
+      new Decimal(formatUnits(balance, decimals))
+        .toDecimalPlaces(2)
+        .toSignificantDigits()
+        .toString(),
   });
 
   const { field, fieldState } = useController({ control, name, rules });

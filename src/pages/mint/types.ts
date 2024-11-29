@@ -4,13 +4,27 @@ export type TabType = "mint" | "redeem";
 
 export type Mode = "basket" | "single";
 
-export type SingleModeFormType = {
+export type MintSingleModeFormType = {
   currency: Currency;
   payValue: string | undefined;
   receiveValue: string | undefined;
 };
 
-export type BasketModeFormType = {
+export type MintBasketModeFormType = {
+  receiveValue: string;
+  collaterals: {
+    currency: Currency;
+    value: string;
+  }[];
+};
+
+export type RedeemSingleModeFormType = {
+  currency: Currency;
+  payValue: string | undefined;
+  receiveValue: string | undefined;
+};
+
+export type RedeemBasketModeFormType = {
   receiveValue: string;
   collaterals: {
     currency: Currency;

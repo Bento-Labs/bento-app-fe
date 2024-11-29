@@ -15,21 +15,22 @@ import {
   useBalanceQuery,
   useLatestPricesQuery,
 } from "entities/currency";
-import { useCurrenciesOptions } from "pages/mint/hooks/use-currencies-options";
-import { checkBalance } from "pages/mint/utils/validations";
 import { bentoUSDConfig } from "shared/config";
 import { mul } from "shared/utils";
 
-import { SingleModeFormType } from "../../types";
+import { useCurrenciesOptions } from "../../hooks/use-currencies-options";
+import { RedeemSingleModeFormType } from "../../types";
+import { checkBalance } from "../../utils/validations";
 import { Input } from "../input";
 import { SubmitButton } from "../submit-button";
+import { SelectCurrency } from "./select-currency";
 
-export const RedeemBasketModeForm = () => {
+export const RedeemSingleModeForm = () => {
   const chainId = useChainId();
   const bento = bentoUSDConfig[chainId];
   const options = useCurrenciesOptions();
 
-  const form = useForm<SingleModeFormType>({
+  const form = useForm<RedeemSingleModeFormType>({
     values: {
       currency: options[0],
       payValue: "",
@@ -57,11 +58,11 @@ export const RedeemBasketModeForm = () => {
   const latestPricesQuery = useLatestPricesQuery();
   const latestPrice = latestPricesQuery.data?.[currency.symbol];
 
-  const handleSuccess: SubmitHandler<SingleModeFormType> = () => {
+  const handleSuccess: SubmitHandler<RedeemSingleModeFormType> = () => {
     //
   };
 
-  const handleError: SubmitErrorHandler<SingleModeFormType> = () => {};
+  const handleError: SubmitErrorHandler<RedeemSingleModeFormType> = () => {};
 
   const usdValue = mul(latestPrice?.formatted, payValue)?.toString() ?? "0";
 
@@ -100,7 +101,7 @@ export const RedeemBasketModeForm = () => {
           name="payValue"
           label="You Receive"
           className="mt-3"
-          // slot={<SelectCurrency control={control} />}
+          slot={<SelectCurrency control={control} />}
           usdValue={usdValue}
           bottomValue={balanceQuery.data?.formattedBalance}
           decimals={currency.decimals}
