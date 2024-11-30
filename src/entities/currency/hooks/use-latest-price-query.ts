@@ -112,6 +112,8 @@ const getQueryOptions = <TData = Result>(
         {} as Record<string, WithFormatted>
       );
 
+      console.log(result);
+
       return result;
     },
     staleTime: 1000 * 5,
