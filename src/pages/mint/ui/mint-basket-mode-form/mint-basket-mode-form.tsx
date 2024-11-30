@@ -18,6 +18,7 @@ import { calcCollateralsValues } from "pages/mint/utils/calculations";
 import { bentoUSDConfig } from "shared/config";
 
 import { useWeightsQuery } from "../../hooks/use-weights-query";
+import { BentoPrice } from "../bento-price";
 import { Input } from "../input";
 import { Collateral } from "./collateral";
 import { SubmitButton } from "./submit-button";
@@ -129,7 +130,7 @@ export const MintBasketModeForm = () => {
 
         <div className="mt-3 flex flex-col rounded-lg bg-mirage pt-5">
           <span className="mb-3 inline-flex px-6 text-sm text-bluishGrey">
-            Deposit basket
+            You deposit
           </span>
           {fieldArray.fields.map((field, index) => {
             return (
@@ -149,6 +150,7 @@ export const MintBasketModeForm = () => {
 
         {/* <SubmitButton className="mt-6 w-full rounded-xl py-4 text-lg" /> */}
 
+        <BentoPrice className="mt-8" />
         <SubmitButton
           control={control}
           className="mt-6 w-full rounded-xl py-4 text-lg"

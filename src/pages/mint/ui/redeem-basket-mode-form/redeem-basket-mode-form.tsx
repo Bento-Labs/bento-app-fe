@@ -24,6 +24,7 @@ import { bentoUSDConfig, bentoVaultCoreConfig } from "shared/config";
 
 import { useWeightsQuery } from "../../hooks/use-weights-query";
 import { validateCurrency } from "../../utils/validations";
+import { BentoPrice } from "../bento-price";
 import { Input } from "../input";
 import { Collateral } from "./collateral";
 import { SubmitButton } from "./submit-button";
@@ -110,7 +111,7 @@ export const RedeemBasketModeForm = () => {
           disabled={!isConnected}
           name="payValue"
           decimals={bento.decimals}
-          label="You Give"
+          label="You Send"
           onMaxClick={() => {
             if (!balanceQuery.data?.formattedBalance) return;
             handleChangeValue(balanceQuery.data?.formattedBalance);
@@ -130,7 +131,7 @@ export const RedeemBasketModeForm = () => {
 
         <div className="mt-3 flex flex-col rounded-lg bg-mirage pt-5">
           <span className="mb-3 inline-flex px-6 text-sm text-bluishGrey">
-            Collaterals
+            You Receive
           </span>
           {fieldArray.fields.map((field, index) => {
             return (
@@ -144,6 +145,8 @@ export const RedeemBasketModeForm = () => {
             );
           })}
         </div>
+
+        <BentoPrice className="mt-8" />
 
         <SubmitButton
           control={control}

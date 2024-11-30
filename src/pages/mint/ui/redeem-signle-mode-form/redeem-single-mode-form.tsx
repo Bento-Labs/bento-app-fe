@@ -22,6 +22,7 @@ import { mul } from "shared/utils";
 import { useCurrenciesOptions } from "../../hooks/use-currencies-options";
 import { RedeemSingleModeFormType } from "../../types";
 import { validateCurrency } from "../../utils/validations";
+import { BentoPrice } from "../bento-price";
 import { Input } from "../input";
 import { SubmitButton } from "../submit-button";
 import { SelectCurrency } from "./select-currency";
@@ -105,6 +106,8 @@ export const RedeemSingleModeForm = () => {
             setValue("payValue", balanceQuery.data?.formattedBalance || "");
           }}
         />
+
+        <BentoPrice className="mt-8" />
 
         <SubmitButton
           disabled={!payValue || !isValid}

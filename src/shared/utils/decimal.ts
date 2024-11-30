@@ -1,7 +1,7 @@
 import { Decimal } from "decimal.js";
 
 export const setupDecimal = () => {
-  Decimal.set({ precision: 19, rounding: Decimal.ROUND_HALF_UP });
+  Decimal.set({ precision: 19, rounding: Decimal.ROUND_DOWN });
 };
 
 type Result<
