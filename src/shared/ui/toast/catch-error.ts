@@ -5,7 +5,7 @@ import {
   WebSocketRequestError,
 } from "viem";
 
-import { notifyError } from "./notify-error";
+import { notifyError } from "./notify";
 
 export const catchError = (error: unknown) => {
   console.error(error);

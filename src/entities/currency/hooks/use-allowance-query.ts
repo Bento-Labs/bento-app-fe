@@ -1,17 +1,55 @@
-import { Address, erc20Abi } from "viem";
-import {
-  useAccount,
-  useChainId,
-  useReadContract,
-  useReadContracts,
-} from "wagmi";
+import { queryOptions, useQueries, useQuery } from "@tanstack/react-query";
+import invariant from "tiny-invariant";
+import { Address, erc20Abi, getContract, PublicClient } from "viem";
+import { useAccount, useChainId, usePublicClient } from "wagmi";
 
-import { Config } from "shared/providers/wagmi";
+import { QueryOptions } from "shared/types";
 
-type Options<TData = bigint> = {
-  account?: Address;
-  chainId?: number;
-  select?: (allowance: bigint) => TData;
+type Params = {
+  accountAddress: Address | undefined;
+  currencyAddress: Address;
+  contractAddress: Address;
+  pc: PublicClient | undefined;
+};
+export const getUseAllowanceQueryKey = ({
+  accountAddress,
+  currencyAddress,
+  contractAddress,
+}: Omit<Params, "pc">) => {
+  return [
+    "use-allowance-query",
+    accountAddress,
+    currencyAddress,
+    contractAddress,
+  ];
+};
+
+const getQueryOptions = <TData = bigint>(
+  params: Params,
+  options?: QueryOptions<bigint, unknown, TData>
+) => {
+  const { accountAddress, contractAddress, currencyAddress, pc } = params;
+  return queryOptions<bigint, unknown, TData>({
+    queryKey: getUseAllowanceQueryKey({
+      accountAddress,
+      contractAddress,
+      currencyAddress,
+    }),
+    queryFn: async () => {
+      invariant(pc, "useAllowancesQuery. pc is undefined");
+      invariant(accountAddress, "useAllowancesQuery. address is undefined");
+
+      const contract = getContract({
+        abi: erc20Abi,
+        address: currencyAddress,
+        client: pc,
+      });
+
+      return contract.read.allowance([accountAddress, contractAddress]);
+    },
+    enabled: Boolean(accountAddress && pc),
+    ...options,
+  });
 };
 
 type UseAllowanceQueryParams = {
@@ -21,30 +59,25 @@ type UseAllowanceQueryParams = {
 
 export const useAllowanceQuery = <TData = bigint>(
   params: UseAllowanceQueryParams,
-  options?: Options<TData>
+  options?: QueryOptions<bigint, unknown, TData>
 ) => {
   const { address: accountAddress } = useAccount();
   const chainId = useChainId();
+  const pc = usePublicClient({ chainId });
 
   const { currencyAddress, contractAddress } = params;
 
-  return useReadContract<
-    typeof erc20Abi,
-    "allowance",
-    readonly [Address, Address],
-    Config,
-    TData
-  >({
-    chainId: options?.chainId || chainId,
-    abi: erc20Abi,
-    functionName: "allowance",
-    account: options?.account ?? accountAddress,
-    address: currencyAddress,
-    args: accountAddress ? [accountAddress, contractAddress] : undefined,
-    query: {
-      select: options?.select,
-    },
-  });
+  return useQuery(
+    getQueryOptions<TData>(
+      {
+        contractAddress,
+        currencyAddress,
+        accountAddress,
+        pc,
+      },
+      options
+    )
+  );
 };
 
 type UseAllowancesQueryParams = {
@@ -53,25 +86,24 @@ type UseAllowancesQueryParams = {
 };
 export const useAllowancesQueries = <TData = bigint>(
   params: UseAllowancesQueryParams,
-  options?: Options<TData>
+  options?: QueryOptions<bigint, unknown, TData>
 ) => {
-  const { currencyAddresses, contractAddress } = params;
-
-  const { address: accountAddress } = useAccount();
+  const { contractAddress, currencyAddresses } = params;
   const chainId = useChainId();
+  const pc = usePublicClient({ chainId });
+  const { address } = useAccount();
 
-  const contracts = currencyAddresses.map((currencyAddress) => {
-    return {
-      chainId: options?.chainId || chainId,
-      abi: erc20Abi,
-      functionName: "allowance",
-      // account: options?.account ?? accountAddress,
-      address: currencyAddress,
-      args: accountAddress ? [accountAddress, contractAddress] : undefined,
-    };
-  });
-
-  return useReadContracts({
-    contracts: contracts,
+  return useQueries({
+    queries: currencyAddresses.map((currencyAddress) => {
+      return getQueryOptions<TData>(
+        {
+          contractAddress,
+          accountAddress: address,
+          currencyAddress,
+          pc,
+        },
+        options
+      );
+    }),
   });
 };

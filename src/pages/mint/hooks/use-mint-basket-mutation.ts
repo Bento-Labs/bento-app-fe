@@ -6,6 +6,7 @@ import { useChainId, useWalletClient } from "wagmi";
 
 import { bentoUSDConfig, bentoVaultCoreConfig } from "shared/config";
 import { bentoVaultCoreABI } from "shared/config/abi";
+import { notifyPromise } from "shared/ui/toast";
 import { mul } from "shared/utils";
 
 type UseMintBasketMutationParams = {
@@ -31,10 +32,6 @@ export const useMintBasketMutation = () => {
         client: wc,
       });
 
-      console.log({
-        amount,
-        minimalBentoUSDAmount: BigInt(mul(amount.toString(), 0.99).toString()),
-      });
       const {
         request: { args, ...options },
       } = await contract.simulate.mintBasket([
@@ -44,8 +41,15 @@ export const useMintBasketMutation = () => {
 
       const hash = await contract.write.mintBasket(args, options);
 
-      const receipt = await waitForTransactionReceipt(wc, { hash });
-      return receipt;
+      const receiptPromise = waitForTransactionReceipt(wc, { hash });
+
+      notifyPromise(receiptPromise, {
+        pending: "Wait for transaction...",
+        error: "Error",
+        success: `You got ${params.amount} bentoUSD`,
+      });
+
+      return await receiptPromise;
     },
   });
 };

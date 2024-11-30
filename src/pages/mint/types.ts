@@ -6,8 +6,8 @@ export type Mode = "basket" | "single";
 
 export type MintSingleModeFormType = {
   currency: Currency;
-  payValue: string | undefined;
-  receiveValue: string | undefined;
+  payValue: string;
+  receiveValue: string;
 };
 
 export type MintBasketModeFormType = {
@@ -20,12 +20,12 @@ export type MintBasketModeFormType = {
 
 export type RedeemSingleModeFormType = {
   currency: Currency;
-  payValue: string | undefined;
-  receiveValue: string | undefined;
+  payValue: string;
+  receiveValue: string;
 };
 
 export type RedeemBasketModeFormType = {
-  receiveValue: string;
+  payValue: string;
   collaterals: {
     currency: Currency;
     value: string;

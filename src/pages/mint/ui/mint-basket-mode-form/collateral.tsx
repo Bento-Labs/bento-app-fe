@@ -1,11 +1,11 @@
 import { useFormContext } from "react-hook-form";
 
 import { twMerge } from "tailwind-merge";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits } from "viem";
 import { useAccount, useChainId } from "wagmi";
 
 import {
-  useAllowancesQueries,
+  useAllowanceQuery,
   useBalanceQuery,
   UseLatestPricesQueryResult,
 } from "entities/currency";
@@ -14,7 +14,7 @@ import { bentoUSDConfig, bentoVaultCoreConfig, Currency } from "shared/config";
 
 import { MintBasketModeFormType } from "../../types";
 import { calcReceiveValue } from "../../utils/calculations";
-import { checkBalance } from "../../utils/validations";
+import { validateCurrency } from "../../utils/validations";
 import { CollateralInput } from "../collateral-input";
 
 type Props = {
@@ -32,12 +32,10 @@ export const Collateral = (props: Props) => {
   const chainId = useChainId();
   const bentoUSD = bentoUSDConfig[chainId];
 
-  const allowancesQuery = useAllowancesQueries({
-    currencyAddresses: getValues().collaterals.map((c) => c.currency.address),
+  const allowanceQuery = useAllowanceQuery({
+    currencyAddress: currency.address,
     contractAddress: bentoVaultCoreConfig[chainId],
   });
-
-  const currentAllowance = allowancesQuery.data?.[index].result;
 
   const balanceQuery = useBalanceQuery(currency.address, {
     select: (balance) => {
@@ -98,30 +96,11 @@ export const Collateral = (props: Props) => {
     <CollateralInput
       disabled={!isConnected}
       rules={{
-        validate: (value) => {
-          if (
-            typeof currentAllowance !== "undefined" &&
-            parseUnits(value, currency.decimals) > BigInt(currentAllowance)
-          ) {
-            return `Approve ${currency.symbol} spending`;
-          }
-
-          const balanceMsg = checkBalance(
-            value,
-            balanceQuery.data?.balance,
-            currency.decimals,
-            currency.symbol
-          );
-
-          if (
-            balanceMsg === true ||
-            balanceMsg === "Unknown balance" ||
-            balanceMsg === "Value is empty"
-          )
-            return true;
-
-          return balanceMsg;
-        },
+        validate: validateCurrency({
+          allowance: allowanceQuery.data,
+          balance: balanceQuery.data?.balance,
+          currency,
+        }),
       }}
       address={currency.address}
       className={twMerge(

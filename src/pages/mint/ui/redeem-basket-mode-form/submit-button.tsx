@@ -4,65 +4,48 @@ import { Control, useFormContext, useWatch } from "react-hook-form";
 import { parseUnits } from "viem";
 import { useAccount, useChainId } from "wagmi";
 
-import {
-  useAllowancesQueries,
-  useERC20ApproveMutation,
-} from "entities/currency";
+import { useAllowanceQuery, useERC20ApproveMutation } from "entities/currency";
 import { AppKitConnectWalletButton } from "features/connect-wallet";
-import { MintBasketModeFormType } from "pages/mint/types";
-import { bentoVaultCoreConfig } from "shared/config";
+import { RedeemBasketModeFormType } from "pages/mint/types";
+import { bentoUSDConfig, bentoVaultCoreConfig } from "shared/config";
 import { Button } from "shared/ui/button";
 
 type Props = ComponentProps<typeof Button> & {
-  control: Control<MintBasketModeFormType>;
+  control: Control<RedeemBasketModeFormType>;
 };
 
 export const SubmitButton = (props: PropsWithChildren<Props>) => {
   const { children, className, currencies, control, ...rest } = props;
   const { isConnected, chain } = useAccount();
   const chainId = useChainId();
-  const { trigger } = useFormContext<MintBasketModeFormType>();
+  const { trigger } = useFormContext<RedeemBasketModeFormType>();
 
-  const collaterals = useWatch<MintBasketModeFormType, "collaterals">({
-    name: "collaterals",
-    control,
+  const bento = bentoUSDConfig[chainId];
+  const bentoVaultCoreAddress = bentoVaultCoreConfig[chainId];
+
+  const payValue = useWatch({ control, name: "payValue" });
+  const allowanceQuery = useAllowanceQuery({
+    contractAddress: bentoVaultCoreAddress,
+    currencyAddress: bento.address,
   });
 
-  const allowancesQueries = useAllowancesQueries({
-    currencyAddresses: collaterals.map((c) => c.currency.address),
-    contractAddress: bentoVaultCoreConfig[chainId],
-  });
+  const isApprovalNeeded = Boolean(
+    payValue &&
+      allowanceQuery.isSuccess &&
+      parseUnits(payValue, bento.decimals) > allowanceQuery.data
+  );
 
   const approveMutation = useERC20ApproveMutation();
 
-  const needApproves = collaterals
-    .map((collateral, index) => {
-      const allowanceQuery = allowancesQueries[index];
-      const value = parseUnits(collateral.value, collateral.currency.decimals);
-
-      if (!allowanceQuery.isSuccess) return;
-      if (value > allowanceQuery.data) {
-        return collateral;
-      }
-    })
-    .filter(
-      (
-        collateral
-      ): collateral is MintBasketModeFormType["collaterals"][number] =>
-        Boolean(collateral)
-    );
-
   const handleApprove = () => {
-    const { currency } = needApproves[0];
-
     approveMutation.mutate(
       {
         contractAddress: bentoVaultCoreConfig[chainId],
-        currency,
+        currency: bento,
       },
       {
         onSuccess: async () => {
-          trigger();
+          trigger("collaterals");
         },
       }
     );
@@ -70,7 +53,7 @@ export const SubmitButton = (props: PropsWithChildren<Props>) => {
 
   const isLoading = approveMutation.isPending;
 
-  if (needApproves.length > 0) {
+  if (isApprovalNeeded) {
     return (
       <Button
         {...rest}
@@ -78,7 +61,7 @@ export const SubmitButton = (props: PropsWithChildren<Props>) => {
         className={className}
         onClick={handleApprove}
       >
-        Approve spending {needApproves[0].currency.symbol}
+        Approve spending {bento.symbol}
       </Button>
     );
   }
@@ -91,7 +74,7 @@ export const SubmitButton = (props: PropsWithChildren<Props>) => {
 
   return (
     <Button {...rest} type="submit" isLoading={isLoading} className={className}>
-      {children ?? "Mint BentoUSD"}
+      {children ?? "Redeem LTs"}
     </Button>
   );
 };

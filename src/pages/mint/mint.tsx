@@ -7,8 +7,8 @@ import { Header } from "pages/ui/layout";
 import { Mode, TabType } from "./types";
 import { MintBasketModeForm } from "./ui/mint-basket-mode-form/mint-basket-mode-form";
 import { MintSingleModeForm } from "./ui/mint-single-mode-form/mint-single-mode-form";
+import { RedeemBasketModeForm } from "./ui/redeem-basket-mode-form/redeem-basket-mode-form";
 import { RedeemSingleModeForm } from "./ui/redeem-signle-mode-form/redeem-single-mode-form";
-// import { RedeemBasketModeForm } from "./ui/redeem-basket-mode-form/redeem-basket-mode-form";
 import { TopControls } from "./ui/top-controls";
 
 export const Mint = () => {
@@ -20,7 +20,7 @@ export const Mint = () => {
       <Header />
       <div className="mx-auto mt-8 w-1/3 min-w-[500px] rounded-2xl border border-white/10 bg-woodSmoke px-5 py-6">
         <h1 className="mb-4 flex justify-center text-center text-lg font-medium">
-          Mint
+          {activeTab === "mint" ? "Mint" : "Redeem"}
         </h1>
         <TopControls
           activeTab={activeTab}
@@ -35,9 +35,9 @@ export const Mint = () => {
         {activeTab === "redeem" && mode === "single" && (
           <RedeemSingleModeForm />
         )}
-        {/* {activeTab === "redeem" && mode === "basket" && (
+        {activeTab === "redeem" && mode === "basket" && (
           <RedeemBasketModeForm />
-        )} */}
+        )}
       </div>
     </>
   );

@@ -37,7 +37,7 @@ export const App = () => {
     <WagmiProvider>
       <RqProvider>
         <RouterProvider future={{ v7_startTransition: true }} router={router} />
-        <ToastContainer theme="dark" icon={false} position="bottom-right" />
+        <ToastContainer theme="dark" position="bottom-right" />
       </RqProvider>
     </WagmiProvider>
   );

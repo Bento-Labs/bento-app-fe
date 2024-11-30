@@ -1,24 +1,32 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import invariant from "tiny-invariant";
 import { Address, erc20Abi, getContract } from "viem";
 import { waitForTransactionReceipt } from "viem/actions";
-import { useWalletClient } from "wagmi";
+import { useAccount, useWalletClient } from "wagmi";
+
+import { Currency } from "shared/config";
+import { notifyPromise } from "shared/ui/toast";
+
+import { getUseAllowanceQueryKey } from "./use-allowance-query";
 
 type Params = {
-  currencyAddress: Address;
+  currency: Currency;
   contractAddress: Address;
 };
 
 export const useERC20ApproveMutation = () => {
   const { data: wc } = useWalletClient();
+  const { address: accountAddress } = useAccount();
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async (params: Params) => {
       invariant(wc, "useERC20ApproveMutation. wc is undefined");
 
-      const { contractAddress, currencyAddress } = params;
+      const { contractAddress, currency } = params;
       const contract = getContract({
         abi: erc20Abi,
-        address: currencyAddress,
+        address: currency.address,
         client: wc,
       });
 
@@ -30,9 +38,25 @@ export const useERC20ApproveMutation = () => {
 
       const hash = await contract.write.approve(args, options);
 
-      const receipt = await waitForTransactionReceipt(wc, { hash });
+      const receiptPromise = waitForTransactionReceipt(wc, { hash });
 
-      return receipt;
+      notifyPromise(receiptPromise, {
+        pending: "Pending...",
+        success: `Spending ${currency.symbol} has been approved`,
+        error: "Error",
+      });
+
+      return await receiptPromise;
+    },
+    onSuccess: async (_, variables) => {
+      const { contractAddress, currency } = variables;
+      const key = getUseAllowanceQueryKey({
+        accountAddress,
+        contractAddress,
+        currencyAddress: currency.address,
+      });
+
+      return await queryClient.invalidateQueries({ queryKey: key });
     },
   });
 };

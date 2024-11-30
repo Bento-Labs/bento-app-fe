@@ -12,15 +12,16 @@ import { useChainId } from "wagmi";
 
 import {
   CurrencyLabel,
+  useAllowanceQuery,
   useBalanceQuery,
   useLatestPricesQuery,
 } from "entities/currency";
-import { useCurrenciesOptions } from "pages/mint/hooks/use-currencies-options";
-import { checkBalance } from "pages/mint/utils/validations";
-import { bentoUSDConfig } from "shared/config";
+import { bentoUSDConfig, bentoVaultCoreConfig } from "shared/config";
 import { mul } from "shared/utils";
 
+import { useCurrenciesOptions } from "../../hooks/use-currencies-options";
 import { MintSingleModeFormType } from "../../types";
+import { validateCurrency } from "../../utils/validations";
 import { Input } from "../input";
 import { SubmitButton } from "../submit-button";
 import { SelectCurrency } from "./select-currency";
@@ -28,6 +29,7 @@ import { SelectCurrency } from "./select-currency";
 export const MintSingleModeForm = () => {
   const chainId = useChainId();
   const bento = bentoUSDConfig[chainId];
+  const bentoVaultCoreAddress = bentoVaultCoreConfig[chainId];
   const options = useCurrenciesOptions();
 
   const form = useForm<MintSingleModeFormType>({
@@ -45,6 +47,11 @@ export const MintSingleModeForm = () => {
 
   const currency = useWatch({ control, name: "currency" });
   const payValue = useWatch({ control, name: "payValue" });
+
+  const allowanceQuery = useAllowanceQuery({
+    contractAddress: bentoVaultCoreAddress,
+    currencyAddress: currency.address,
+  });
 
   const balanceQuery = useBalanceQuery(currency.address, {
     select: (data) => {
@@ -71,22 +78,11 @@ export const MintSingleModeForm = () => {
       <form onSubmit={handleSubmit(handleSuccess, handleError)}>
         <Input
           rules={{
-            validate: (data) => {
-              const balanceMsg = checkBalance(
-                data,
-                balanceQuery.data?.balance,
-                currency.decimals,
-                currency.symbol
-              );
-              if (
-                balanceMsg === true ||
-                balanceMsg === "Unknown balance" ||
-                balanceMsg === "Value is empty"
-              )
-                return true;
-
-              return balanceMsg;
-            },
+            validate: validateCurrency({
+              allowance: allowanceQuery.data,
+              balance: balanceQuery.data?.balance,
+              currency,
+            }),
           }}
           control={control}
           name="payValue"
@@ -109,10 +105,6 @@ export const MintSingleModeForm = () => {
           usdValue="0"
           decimals={bento.decimals}
         />
-
-        {/* <SelectNetwork className="mt-5" />
-
-      <BentoPlusToggle className="mt-4" checked={false} onChange={() => {}} /> */}
 
         <SubmitButton
           disabled={!payValue || !isValid}

@@ -72,7 +72,7 @@ export const Input = <T extends FieldValues, N extends Path<T>>(
 
         <div className="flex items-center justify-between gap-x-1.5">
           <CurrencyInput
-            autoComplete="none"
+            autoComplete="inputCurrency"
             disabled={field.disabled}
             onBlur={field.onBlur}
             name={field.name}

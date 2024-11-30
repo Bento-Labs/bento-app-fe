@@ -12,15 +12,16 @@ import { useChainId } from "wagmi";
 
 import {
   CurrencyLabel,
+  useAllowanceQuery,
   useBalanceQuery,
   useLatestPricesQuery,
 } from "entities/currency";
-import { bentoUSDConfig } from "shared/config";
+import { bentoUSDConfig, bentoVaultCoreConfig } from "shared/config";
 import { mul } from "shared/utils";
 
 import { useCurrenciesOptions } from "../../hooks/use-currencies-options";
 import { RedeemSingleModeFormType } from "../../types";
-import { checkBalance } from "../../utils/validations";
+import { validateCurrency } from "../../utils/validations";
 import { Input } from "../input";
 import { SubmitButton } from "../submit-button";
 import { SelectCurrency } from "./select-currency";
@@ -28,6 +29,7 @@ import { SelectCurrency } from "./select-currency";
 export const RedeemSingleModeForm = () => {
   const chainId = useChainId();
   const bento = bentoUSDConfig[chainId];
+  const bentoVaultCoreAddress = bentoVaultCoreConfig[chainId];
   const options = useCurrenciesOptions();
 
   const form = useForm<RedeemSingleModeFormType>({
@@ -45,6 +47,11 @@ export const RedeemSingleModeForm = () => {
 
   const currency = useWatch({ control, name: "currency" });
   const payValue = useWatch({ control, name: "payValue" });
+
+  const allowanceQuery = useAllowanceQuery({
+    contractAddress: bentoVaultCoreAddress,
+    currencyAddress: bento.address,
+  });
 
   const balanceQuery = useBalanceQuery(currency.address, {
     select: (data) => {
@@ -80,22 +87,11 @@ export const RedeemSingleModeForm = () => {
         />
         <Input
           rules={{
-            validate: (data) => {
-              const balanceMsg = checkBalance(
-                data,
-                balanceQuery.data?.balance,
-                currency.decimals,
-                currency.symbol
-              );
-              if (
-                balanceMsg === true ||
-                balanceMsg === "Unknown balance" ||
-                balanceMsg === "Value is empty"
-              )
-                return true;
-
-              return balanceMsg;
-            },
+            validate: validateCurrency({
+              allowance: allowanceQuery.data,
+              balance: balanceQuery.data?.balance,
+              currency: bento,
+            }),
           }}
           control={control}
           name="payValue"
