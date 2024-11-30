@@ -88,12 +88,13 @@ export const MintBasketModeForm = () => {
     });
 
     values.map((value, index) => {
-      const collateral = collaterals[index];
+      // const collateral = collaterals[index];
       setValue(
         `collaterals.${index}.value`,
         value
-          .toDecimalPlaces(collateral.currency.decimals + 1)
-          .toSignificantDigits(collateral.currency.decimals)
+          .toDecimalPlaces(2)
+          // .toDecimalPlaces(collateral.currency.decimals + 1)
+          .toSignificantDigits()
           .toString(),
         {
           shouldDirty: true,
