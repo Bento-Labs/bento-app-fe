@@ -130,7 +130,7 @@ export const MintBasketModeForm = () => {
 
         <div className="mt-3 flex flex-col rounded-lg bg-mirage pt-5">
           <span className="mb-3 inline-flex px-6 text-sm text-bluishGrey">
-            You deposit
+            You Deposit
           </span>
           {fieldArray.fields.map((field, index) => {
             return (
