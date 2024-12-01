@@ -186,12 +186,9 @@ export const MintBasketModeForm = () => {
           name="receiveValue"
           decimals={bento.decimals}
           label="You Recieve"
-          onMaxClick={() => {
-            //
-          }}
           slot={<CurrencyLabel symbol={bento.symbol} icon={bento.logoURI} />}
-          bottomLabel="Available to Mint"
-          bottomValue="20"
+          // bottomLabel="Available to Mint"
+          // bottomValue="20"
           onChange={handleChangeReceiveValue}
         />
 

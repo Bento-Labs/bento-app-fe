@@ -78,7 +78,9 @@ export const CollateralInput = <T extends FieldValues, Name extends Path<T>>(
       <div className="ml-1 flex flex-col gap-x-1 text-white">
         <div className="flex">
           <span className="mr-1 text-bluishGrey">Balance:</span>{" "}
-          {formatCurrency(balanceQuery.data?.formatted, { decimalScale: 2 })}
+          {balanceQuery.data
+            ? formatCurrency(balanceQuery.data?.formatted, { decimalScale: 2 })
+            : "0"}
         </div>
       </div>
     </div>

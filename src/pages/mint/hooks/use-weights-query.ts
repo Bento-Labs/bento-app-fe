@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
+import Decimal from "decimal.js";
 import invariant from "tiny-invariant";
 import { getContract } from "viem";
 import { useChainId, usePublicClient } from "wagmi";
 
 import { bentoVaultCoreConfig } from "shared/config";
 import { bentoVaultCoreABI } from "shared/config/abi";
-import { div } from "shared/utils";
+import { div, mul } from "shared/utils";
 
 export type Weights = readonly [
   usdtWeight: number,
@@ -28,14 +29,18 @@ export const useWeightsQuery = () => {
       });
 
       const weights = await contract.read.getWeights();
+      const sum = weights.reduce((acc, w) => {
+        acc = acc.plus(w);
+        return acc;
+      }, new Decimal(0));
+
+      const multiplier = div(100, sum);
 
       const normalizedWeights = weights.map((w) => {
-        return div(w, 2).toNumber();
+        return mul(w, multiplier).toNumber();
       });
 
-      console.log({ normalizedWeights, weights });
-
-      return normalizedWeights as Weights;
+      return normalizedWeights as unknown as Weights;
     },
 
     enabled: Boolean(pc),
