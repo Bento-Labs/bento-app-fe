@@ -34,7 +34,7 @@ export const MintSingleModeForm = () => {
 
   const form = useForm<MintSingleModeFormType>({
     values: {
-      currency: currencies[0],
+      currency: currencies.find((c) => c.symbol === "USDe") || currencies[0],
       payValue: "",
       receiveValue: "",
     },
