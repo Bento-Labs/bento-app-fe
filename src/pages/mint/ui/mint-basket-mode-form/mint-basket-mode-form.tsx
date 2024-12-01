@@ -5,49 +5,69 @@ import {
   SubmitHandler,
   useFieldArray,
   useForm,
+  useWatch,
 } from "react-hook-form";
 
 import { useAccount, useChainId } from "wagmi";
 
-import { CurrencyLabel, useLatestPricesQuery } from "entities/currency";
-import { useCurrenciesOptions } from "pages/mint/hooks/use-currencies-options";
+import {
+  CurrencyLabel,
+  useAllowancesQueries,
+  useBalancesQueries,
+  useLatestPricesQuery,
+} from "entities/currency";
+import { useCurrencies } from "pages/mint/hooks/use-currencies-options";
 import { useMintBasketMutation } from "pages/mint/hooks/use-mint-basket-mutation";
 import { MintBasketModeFormType } from "pages/mint/types";
-import { calcCollateralsValues } from "pages/mint/utils/calculations";
-// import { calcCollateralValue } from "pages/mint/utils/calculations";
-import { bentoUSDConfig } from "shared/config";
+import { validateCurrency } from "pages/mint/utils/validations";
+import { bentoUSDConfig, bentoVaultCoreConfig } from "shared/config";
 
 import { useWeightsQuery } from "../../hooks/use-weights-query";
+import {
+  calcCollateralsValues,
+  calcReceiveValue,
+} from "../../utils/calculations";
 import { BentoPrice } from "../bento-price";
+import { CollateralInput } from "../collateral-input";
 import { Input } from "../input";
-import { Collateral } from "./collateral";
-import { SubmitButton } from "./submit-button";
+import { SubmitButton } from "../submit-button";
 
 export const MintBasketModeForm = () => {
   const { isConnected } = useAccount();
-  const weightsQuery = useWeightsQuery();
-
   const chainId = useChainId();
-  const options = useCurrenciesOptions();
+  const currencies = useCurrencies();
   const bento = bentoUSDConfig[chainId];
 
-  const latestPricesQuery = useLatestPricesQuery();
-
-  const collaterals: MintBasketModeFormType["collaterals"] = useMemo(() => {
-    return options.map((op) => {
-      return {
-        currency: op,
-        value: "",
-      };
-    });
-  }, [options]);
-
+  const values = useMemo(() => {
+    return {
+      receiveValue: "",
+      collaterals: currencies.map((op) => {
+        return {
+          currency: op,
+          value: "",
+        };
+      }),
+    } as MintBasketModeFormType;
+  }, [currencies]);
   const form = useForm<MintBasketModeFormType>({
-    values: { receiveValue: "", collaterals },
+    values: values,
     mode: "onChange",
   });
 
-  const { handleSubmit, control, getValues, setValue } = form;
+  const { handleSubmit, control, getValues, setValue, trigger } = form;
+
+  const collaterals = useWatch<MintBasketModeFormType, "collaterals">({
+    control,
+    name: "collaterals",
+  });
+
+  const latestPricesQuery = useLatestPricesQuery();
+  const allowancesQueries = useAllowancesQueries({
+    currencyAddresses: collaterals.map(({ currency: { address } }) => address),
+    contractAddress: bentoVaultCoreConfig[chainId],
+  });
+  const balancesQueries = useBalancesQueries({ currencies });
+  const weightsQuery = useWeightsQuery();
 
   const fieldArray = useFieldArray({
     control,
@@ -106,6 +126,54 @@ export const MintBasketModeForm = () => {
     });
   };
 
+  const handleChangeCollateralValue = (value: string, index: number) => {
+    const weights = weightsQuery.data;
+    const prices = latestPricesQuery.data;
+    if (!weights || !prices) return;
+    const { collaterals } = getValues();
+
+    if (!value) {
+      setValue("receiveValue", "");
+      collaterals.forEach((_, idx) => {
+        setValue(`collaterals.${idx}.value`, "");
+      });
+      return;
+    }
+
+    const { collateralsValues, receiveValue } = calcReceiveValue({
+      collaterals: collaterals.map((c) => c.currency),
+      currentValue: value,
+      inputCurrency: collaterals[index].currency,
+      prices,
+      weights,
+    });
+
+    setValue(
+      "receiveValue",
+      receiveValue
+        .toDecimalPlaces(bento.decimals + 1)
+        .toSignificantDigits(bento.decimals)
+        .toString()
+    );
+
+    collateralsValues.forEach(({ collateralValue }, index) => {
+      const { currency } = collaterals[index];
+
+      setValue(
+        `collaterals.${index}.value`,
+        collateralValue
+          .toDecimalPlaces(currency.decimals)
+          .toSignificantDigits()
+          .toString(),
+        {
+          shouldDirty: true,
+          shouldTouch: true,
+          shouldValidate: true,
+        }
+      );
+    });
+  };
+
   return (
     <FormProvider {...form}>
       <form
@@ -118,7 +186,6 @@ export const MintBasketModeForm = () => {
           name="receiveValue"
           decimals={bento.decimals}
           label="You Recieve"
-          // usdValue="21.90"
           onMaxClick={() => {
             //
           }}
@@ -132,14 +199,27 @@ export const MintBasketModeForm = () => {
           <span className="mb-3 inline-flex px-6 text-sm text-bluishGrey">
             You Deposit
           </span>
-          {fieldArray.fields.map((field, index) => {
+          {fieldArray.fields.map(({ currency, id }, index) => {
+            const allowanceQuery = allowancesQueries[index];
+            const balanceQuery = balancesQueries[index];
             return (
-              <Collateral
-                weights={weightsQuery.data}
-                prices={latestPricesQuery.data}
-                currency={field.currency}
-                index={index}
-                key={field.id}
+              <CollateralInput
+                key={id}
+                disabled={!isConnected}
+                rules={{
+                  validate: validateCurrency({
+                    allowance: allowanceQuery.data,
+                    balance: balanceQuery.data?.balance,
+                    currency,
+                  }),
+                }}
+                address={currency.address}
+                control={control}
+                logoURI={currency.logoURI}
+                name={`collaterals.${index}.value`}
+                symbol={currency.symbol}
+                decimals={currency.decimals}
+                onChange={(value) => handleChangeCollateralValue(value, index)}
               />
             );
           })}
@@ -148,12 +228,13 @@ export const MintBasketModeForm = () => {
         {/* <SelectNetwork className="mt-5" /> */}
         {/* <BentoPlusToggle className="mt-4" checked={false} onChange={() => {}} /> */}
 
-        {/* <SubmitButton className="mt-6 w-full rounded-xl py-4 text-lg" /> */}
-
         <BentoPrice className="mt-8" />
         <SubmitButton
-          control={control}
           className="mt-6 w-full rounded-xl py-4 text-lg"
+          approvalCurrencies={collaterals}
+          onApproveSuccess={() => {
+            trigger();
+          }}
         />
       </form>
     </FormProvider>

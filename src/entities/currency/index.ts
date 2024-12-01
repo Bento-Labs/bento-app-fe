@@ -6,7 +6,7 @@ export {
   useAllowancesQueries,
 } from "./hooks/use-allowance-query";
 
-export { useBalanceQuery } from "./hooks/use-balance-query";
+export { useBalancesQueries, useBalanceQuery } from "./hooks/use-balance-query";
 export {
   useLatestPricesQuery,
   type Result as UseLatestPricesQueryResult,

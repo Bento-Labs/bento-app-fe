@@ -6,13 +6,13 @@ import {
   UseControllerProps,
 } from "react-hook-form";
 
-import Decimal from "decimal.js";
 import { twMerge } from "tailwind-merge";
-import { Address, formatUnits } from "viem";
+import { Address } from "viem";
 
 import { useBalanceQuery } from "entities/currency";
 import { CurrencyInput } from "shared/ui/currency-input";
 import { Img } from "shared/ui/img";
+import { formatCurrency } from "shared/web3/utils";
 
 type Props<T extends FieldValues, Name extends Path<T>> = {
   disabled?: boolean;
@@ -43,20 +43,19 @@ export const CollateralInput = <T extends FieldValues, Name extends Path<T>>(
     onChange,
   } = props;
 
-  const balanceQuery = useBalanceQuery(address, {
-    select: (balance) =>
-      new Decimal(formatUnits(balance, decimals))
-        .toDecimalPlaces(2)
-        .toSignificantDigits()
-        .toString(),
-  });
+  const balanceQuery = useBalanceQuery({ currency: { address, decimals } });
 
   const { field, fieldState } = useController({ control, name, rules });
 
   const errorMsg = fieldState.error?.message;
 
   return (
-    <div className={twMerge("flex items-end", className)}>
+    <div
+      className={twMerge(
+        "flex items-end border-b border-b-charcoalGrey px-6 py-3 last:border-b-0",
+        className
+      )}
+    >
       <div className="flex items-center gap-x-4">
         <Img className="size-[38px]" src={logoURI} alt={symbol} />
         <div className="flex flex-col">
@@ -79,7 +78,7 @@ export const CollateralInput = <T extends FieldValues, Name extends Path<T>>(
       <div className="ml-1 flex flex-col gap-x-1 text-white">
         <div className="flex">
           <span className="mr-1 text-bluishGrey">Balance:</span>{" "}
-          {balanceQuery.data}
+          {formatCurrency(balanceQuery.data?.formatted, { decimalScale: 2 })}
         </div>
       </div>
     </div>

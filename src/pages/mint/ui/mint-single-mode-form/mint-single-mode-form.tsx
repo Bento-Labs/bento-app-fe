@@ -7,7 +7,6 @@ import {
   useWatch,
 } from "react-hook-form";
 
-import { formatUnits } from "viem";
 import { useChainId } from "wagmi";
 
 import {
@@ -16,33 +15,33 @@ import {
   useBalanceQuery,
   useLatestPricesQuery,
 } from "entities/currency";
+import { SelectCurrency } from "features/select-currency";
 import { bentoUSDConfig, bentoVaultCoreConfig } from "shared/config";
 import { mul } from "shared/utils";
 
-import { useCurrenciesOptions } from "../../hooks/use-currencies-options";
+import { useCurrencies } from "../../hooks/use-currencies-options";
 import { MintSingleModeFormType } from "../../types";
 import { validateCurrency } from "../../utils/validations";
 import { BentoPrice } from "../bento-price";
 import { Input } from "../input";
 import { SubmitButton } from "../submit-button";
-import { SelectCurrency } from "./select-currency";
 
 export const MintSingleModeForm = () => {
   const chainId = useChainId();
   const bento = bentoUSDConfig[chainId];
   const bentoVaultCoreAddress = bentoVaultCoreConfig[chainId];
-  const options = useCurrenciesOptions();
+  const currencies = useCurrencies();
 
   const form = useForm<MintSingleModeFormType>({
     values: {
-      currency: options[0],
+      currency: currencies[0],
       payValue: "",
       receiveValue: "",
     },
     mode: "onChange",
   });
 
-  const { handleSubmit, control, setValue } = form;
+  const { handleSubmit, control, setValue, reset, trigger } = form;
 
   const { isValid } = useFormState({ control });
 
@@ -54,14 +53,7 @@ export const MintSingleModeForm = () => {
     currencyAddress: currency.address,
   });
 
-  const balanceQuery = useBalanceQuery(currency.address, {
-    select: (data) => {
-      return {
-        balance: data,
-        formattedBalance: formatUnits(data, currency.decimals),
-      };
-    },
-  });
+  const balanceQuery = useBalanceQuery({ currency });
 
   const latestPricesQuery = useLatestPricesQuery();
   const latestPrice = latestPricesQuery.data?.[currency.symbol];
@@ -89,12 +81,21 @@ export const MintSingleModeForm = () => {
           name="payValue"
           label="You Give"
           className="mt-2"
-          slot={<SelectCurrency control={control} />}
+          slot={
+            <SelectCurrency
+              logoURI={currency.logoURI}
+              symbol={currency.symbol}
+              options={currencies}
+              onChange={(currency) => {
+                reset({ currency, payValue: "", receiveValue: "" });
+              }}
+            />
+          }
           usdValue={usdValue}
-          bottomValue={balanceQuery.data?.formattedBalance}
+          bottomValue={balanceQuery.data?.formatted}
           decimals={currency.decimals}
           onMaxClick={() => {
-            setValue("payValue", balanceQuery.data?.formattedBalance || "");
+            setValue("payValue", balanceQuery.data?.formatted || "");
           }}
         />
         <Input
@@ -110,6 +111,10 @@ export const MintSingleModeForm = () => {
         <BentoPrice className="mt-8" />
 
         <SubmitButton
+          approvalCurrencies={[{ currency, value: payValue }]}
+          onApproveSuccess={() => {
+            trigger("payValue");
+          }}
           disabled={!payValue || !isValid}
           className="mt-6 w-full rounded-xl py-4 text-lg"
         />

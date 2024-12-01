@@ -5,6 +5,7 @@ import { useChainId, usePublicClient } from "wagmi";
 
 import { bentoVaultCoreConfig } from "shared/config";
 import { bentoVaultCoreABI } from "shared/config/abi";
+import { div } from "shared/utils";
 
 export type Weights = readonly [
   usdtWeight: number,
@@ -28,9 +29,13 @@ export const useWeightsQuery = () => {
 
       const weights = await contract.read.getWeights();
 
-      return weights as Weights;
+      const normalizedWeights = weights.map((w) => {
+        return div(w, 2).toNumber();
+      });
 
-      //   return [25, 37.5, 25, 30] as Weights;
+      console.log({ normalizedWeights, weights });
+
+      return normalizedWeights as Weights;
     },
 
     enabled: Boolean(pc),

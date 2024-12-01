@@ -4,7 +4,7 @@ import { useChainId } from "wagmi";
 
 import { collateralsConfig } from "shared/config/const";
 
-export const useCurrenciesOptions = () => {
+export const useCurrencies = () => {
   const chainId = useChainId();
   const collaterals = collateralsConfig[chainId];
 

@@ -5,6 +5,7 @@ import {
   SubmitHandler,
   useFieldArray,
   useForm,
+  useWatch,
 } from "react-hook-form";
 
 import { useDebounceCallback } from "usehooks-ts";
@@ -15,59 +16,54 @@ import {
   CurrencyLabel,
   useAllowanceQuery,
   useBalanceQuery,
-  useLatestPricesQuery,
 } from "entities/currency";
-import { useCurrenciesOptions } from "pages/mint/hooks/use-currencies-options";
+import { useCurrencies } from "pages/mint/hooks/use-currencies-options";
 import { useFetchGetOutputLTAmountsQuery } from "pages/mint/hooks/use-get-output-lt-amounts-query";
 import { RedeemBasketModeFormType } from "pages/mint/types";
 import { bentoUSDConfig, bentoVaultCoreConfig } from "shared/config";
 
-import { useWeightsQuery } from "../../hooks/use-weights-query";
 import { validateCurrency } from "../../utils/validations";
 import { BentoPrice } from "../bento-price";
+import { CollateralInput } from "../collateral-input";
 import { Input } from "../input";
-import { Collateral } from "./collateral";
-import { SubmitButton } from "./submit-button";
+import { SubmitButton } from "../submit-button";
 
 export const RedeemBasketModeForm = () => {
   const { isConnected } = useAccount();
-  const weightsQuery = useWeightsQuery();
 
   const chainId = useChainId();
-  const options = useCurrenciesOptions();
-  const latestPricesQuery = useLatestPricesQuery();
+  const currencies = useCurrencies();
   const bento = bentoUSDConfig[chainId];
   const bentoVaultCoreAddress = bentoVaultCoreConfig[chainId];
 
-  const balanceQuery = useBalanceQuery(bento.address, {
-    select: (data) => {
-      return {
-        balance: data,
-        formattedBalance: formatUnits(data, bento.decimals),
-      };
-    },
-  });
-
+  const balanceQuery = useBalanceQuery({ currency: bento });
   const allowanceQuery = useAllowanceQuery({
     contractAddress: bentoVaultCoreAddress,
     currencyAddress: bento.address,
   });
 
-  const collaterals: RedeemBasketModeFormType["collaterals"] = useMemo(() => {
-    return options.map((op) => {
-      return {
-        currency: op,
-        value: "",
-      };
-    });
-  }, [options]);
+  const values = useMemo(() => {
+    return {
+      payValue: "",
+      collaterals: currencies.map((op) => {
+        return {
+          currency: op,
+          value: "",
+        };
+      }),
+    };
+  }, [currencies]);
 
   const form = useForm<RedeemBasketModeFormType>({
-    values: { payValue: "", collaterals },
+    values: values,
     mode: "onChange",
   });
+  const { handleSubmit, control, setValue, trigger } = form;
 
-  const { handleSubmit, control, setValue } = form;
+  const collaterals = useWatch<RedeemBasketModeFormType, "collaterals">({
+    control,
+    name: "collaterals",
+  });
 
   const fetchOutputAmounts = useFetchGetOutputLTAmountsQuery();
 
@@ -113,12 +109,12 @@ export const RedeemBasketModeForm = () => {
           decimals={bento.decimals}
           label="You Send"
           onMaxClick={() => {
-            if (!balanceQuery.data?.formattedBalance) return;
-            handleChangeValue(balanceQuery.data?.formattedBalance);
+            if (!balanceQuery.data?.formatted) return;
+            handleChangeValue(balanceQuery.data?.formatted);
           }}
           slot={<CurrencyLabel symbol={bento.symbol} icon={bento.logoURI} />}
           bottomLabel="balance"
-          bottomValue={balanceQuery.data?.formattedBalance}
+          bottomValue={balanceQuery.data?.formatted}
           onChange={handleChangeValue}
           rules={{
             validate: validateCurrency({
@@ -133,14 +129,17 @@ export const RedeemBasketModeForm = () => {
           <span className="mb-3 inline-flex px-6 text-sm text-bluishGrey">
             You Receive
           </span>
-          {fieldArray.fields.map((field, index) => {
+          {fieldArray.fields.map(({ currency, id }, index) => {
             return (
-              <Collateral
-                weights={weightsQuery.data}
-                prices={latestPricesQuery.data}
-                currency={field.currency}
-                index={index}
-                key={field.id}
+              <CollateralInput
+                key={id}
+                disabled={!isConnected}
+                address={currency.address}
+                control={control}
+                logoURI={currency.logoURI}
+                name={`collaterals.${index}.value`}
+                symbol={currency.symbol}
+                decimals={currency.decimals}
               />
             );
           })}
@@ -149,8 +148,11 @@ export const RedeemBasketModeForm = () => {
         <BentoPrice className="mt-8" />
 
         <SubmitButton
-          control={control}
           className="mt-6 w-full rounded-xl py-4 text-lg"
+          approvalCurrencies={collaterals}
+          onApproveSuccess={() => {
+            trigger();
+          }}
         />
       </form>
     </FormProvider>

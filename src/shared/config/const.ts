@@ -80,7 +80,6 @@ export const collateralsConfig: Record<number, Record<string, Currency>> = {
       address: "0xC98F51755976811c1D71d895DA2A73b46Dfbc918" as Address,
       name: "USDC (USDC)",
     },
-
     DAI: {
       logoURI: "/tokens/dai-logo.svg",
       chainId: 11155111,
