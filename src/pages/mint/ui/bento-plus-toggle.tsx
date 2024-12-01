@@ -12,7 +12,7 @@ export const BentoPlusToggle = ({ className, checked, onChange }: Props) => {
   return (
     <div className={twMerge("flex items-center", className)}>
       <span className="mr-auto inline-flex font-medium text-boulder">
-        Mint BentoUSD+
+        Mint bentoUSD+
       </span>
       <label className="flex cursor-pointer select-none items-center gap-x-2">
         <span className="inline-flex font-medium text-brightSun">

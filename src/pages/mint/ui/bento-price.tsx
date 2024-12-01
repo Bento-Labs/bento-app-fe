@@ -6,6 +6,7 @@ import { useChainId } from "wagmi";
 
 import { useLatestPricesQuery } from "entities/currency";
 import { bentoUSDConfig } from "shared/config";
+import { Icon } from "shared/ui/icon";
 import { div, mul, pow } from "shared/utils";
 
 import { useCurrenciesOptions } from "../hooks/use-currencies-options";
@@ -39,8 +40,15 @@ export const BentoPrice = (props: Props) => {
   }, [weightsQuery.data, latestPricesQuery.data, currencies]);
 
   return (
-    <div className={twMerge("font-medium", className)}>
-      1 {bento.symbol} = ${price?.toDecimalPlaces(3).toString()}
+    <div className={twMerge("flex justify-between font-medium", className)}>
+      <span>
+        1 {bento.symbol} = ${price?.toDecimalPlaces(3).toString()}
+      </span>
+
+      <span className="flex gap-x-1">
+        <Icon name="gasoline" className="size-5" />
+        Estimated gas cost: N/A
+      </span>
     </div>
   );
 };

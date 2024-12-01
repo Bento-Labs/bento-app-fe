@@ -17,7 +17,7 @@ export const SubmitButton = (props: PropsWithChildren<Props>) => {
 
   return (
     <Button {...rest} type="submit" className={className}>
-      {children ?? "Mint BentoUSD"}
+      {children ?? "Mint bentoUSD"}
     </Button>
   );
 };

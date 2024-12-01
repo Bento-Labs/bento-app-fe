@@ -57,7 +57,7 @@ export const TopControls = (props: Props) => {
       >
         <Icon name="switch" className="size-4" />
         <TextGradient>
-          {mode === "single" ? "Basket Mode" : "Single Mode"}
+          {mode === "single" ? "Multi-Asset" : "Single-Asset"}
         </TextGradient>
       </Button>
       <Button className="ml-1 size-10" theme="mirage" onClick={onReloadClick}>
