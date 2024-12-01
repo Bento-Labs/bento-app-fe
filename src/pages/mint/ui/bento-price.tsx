@@ -40,7 +40,9 @@ export const BentoPrice = (props: Props) => {
   }, [weightsQuery.data, latestPricesQuery.data, currencies]);
 
   return (
-    <div className={twMerge("flex justify-between font-medium", className)}>
+    <div
+      className={twMerge("flex justify-between text-sm font-medium", className)}
+    >
       <span>
         {price && (
           <>
