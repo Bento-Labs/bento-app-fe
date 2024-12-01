@@ -113,7 +113,9 @@ export const MintSingleModeForm = () => {
         <SubmitButton
           approvalCurrencies={[{ currency, value: payValue }]}
           onApproveSuccess={() => {
-            trigger("payValue");
+            setTimeout(() => {
+              trigger("payValue");
+            }, 200);
           }}
           disabled={!payValue || !isValid}
           className="mt-6 w-full rounded-xl py-4 text-lg"

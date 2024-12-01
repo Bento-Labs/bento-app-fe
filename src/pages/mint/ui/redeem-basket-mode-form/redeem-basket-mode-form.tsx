@@ -150,8 +150,13 @@ export const RedeemBasketModeForm = () => {
         <SubmitButton
           className="mt-6 w-full rounded-xl py-4 text-lg"
           approvalCurrencies={collaterals}
-          onApproveSuccess={() => {
-            trigger();
+          onApproveSuccess={({ currency }) => {
+            const index = currencies.findIndex(
+              (c) => c.address === currency.address
+            );
+            setTimeout(() => {
+              trigger(`collaterals.${index}.value`);
+            }, 200);
           }}
         />
       </form>

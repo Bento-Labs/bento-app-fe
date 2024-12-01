@@ -40,6 +40,8 @@ export const useWeightsQuery = () => {
         return mul(w, multiplier).toNumber();
       });
 
+      console.log({ normalizedWeights, weights });
+
       return normalizedWeights as unknown as Weights;
     },
 

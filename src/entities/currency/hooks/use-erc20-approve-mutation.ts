@@ -56,7 +56,8 @@ export const useERC20ApproveMutation = () => {
         currencyAddress: currency.address,
       });
 
-      return await queryClient.invalidateQueries({ queryKey: key });
+      const result = await queryClient.invalidateQueries({ queryKey: key });
+      return result;
     },
   });
 };

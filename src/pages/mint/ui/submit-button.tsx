@@ -13,7 +13,7 @@ import { Button } from "shared/ui/button";
 
 type Props = ComponentProps<typeof Button> & {
   approvalCurrencies: { currency: Currency; value: string }[];
-  onApproveSuccess: () => void;
+  onApproveSuccess: (params: { currency: Currency }) => void;
 };
 
 export const SubmitButton = (props: PropsWithChildren<Props>) => {
@@ -50,8 +50,8 @@ export const SubmitButton = (props: PropsWithChildren<Props>) => {
         currency,
       },
       {
-        onSuccess: () => {
-          onApproveSuccess();
+        onSuccess: (_, variables) => {
+          onApproveSuccess(variables);
         },
       }
     );
