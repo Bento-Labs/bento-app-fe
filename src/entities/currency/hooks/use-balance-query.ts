@@ -7,7 +7,7 @@ import {
   getContract,
   PublicClient,
 } from "viem";
-import { useAccount, usePublicClient } from "wagmi";
+import { useAccount, useChainId, usePublicClient } from "wagmi";
 
 import { Currency } from "shared/config";
 import { QueryOptions } from "shared/types";
@@ -86,7 +86,8 @@ export const useBalanceQuery = <TData = Result>(
   options?: QueryOptions<Result, unknown, TData>
 ) => {
   const { address } = useAccount();
-  const pc = usePublicClient();
+  const chainId = useChainId();
+  const pc = usePublicClient({ chainId });
   return useQuery(
     getQueryOptions(
       { accountAddress: address, pc, currency: params.currency },

@@ -1,5 +1,4 @@
 import { twJoin, twMerge } from "tailwind-merge";
-import { formatUnits } from "viem";
 
 import { useBalanceQuery, useLatestPricesQuery } from "entities/currency";
 import { Img } from "shared/ui/img";
@@ -18,18 +17,18 @@ type Props = {
 };
 
 export const Option = ({ className, option, isSelected, onClick }: Props) => {
-  const { symbol, address, chainId, logoURI, decimals } = option;
+  const { symbol, address, logoURI, decimals } = option;
 
   const latestPricesQuery = useLatestPricesQuery();
 
   const latestPrice = latestPricesQuery.data?.[symbol];
 
-  const query = useBalanceQuery(address, {
-    chainId,
-    select: (balance) => formatUnits(balance, decimals),
-  });
+  const query = useBalanceQuery({ currency: { address, decimals } });
 
-  const usdValue = mul(latestPrice?.formatted, query.data)?.toString();
+  const usdValue = mul(
+    latestPrice?.formatted,
+    query.data?.formatted
+  )?.toString();
 
   return (
     <li
@@ -55,7 +54,7 @@ export const Option = ({ className, option, isSelected, onClick }: Props) => {
       </div>
       <div className="ml-auto flex flex-col">
         <span className="text-right font-medium text-white">
-          {query.data ?? 0}
+          {query.data?.formatted ?? 0}
         </span>
         {usdValue && (
           <span className="mt-1 text-right text-xs text-grey">
