@@ -6,7 +6,7 @@ import {
 export const Header = () => {
   return (
     <nav className="mx-10 mt-6 flex items-center">
-      <img className="size-[64px]" src="/logo.svg" alt="log" />
+      <img className="w-[113px]" src="/logo.png" alt="log" />
 
       <AppKitConnectWalletButton className="ml-auto" />
 
